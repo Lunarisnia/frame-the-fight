@@ -1,14 +1,11 @@
-import { Draggable } from "./components"
-import { Nameplate } from "./components/nameplate/nameplate"
+import { Draggable, Frame } from "./components"
+import "./App.css";
 
 function App() {
   return (
     <>
-      <Draggable>
-        <Nameplate />
-      </Draggable>
-      <Draggable>
-        <div style={{ backgroundColor: "red", width: 400, height: 100 }}><h1>HEADER</h1></div>
+      <Draggable x={97} y={5}>
+        <Frame />
       </Draggable>
     </>
   )
