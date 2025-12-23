@@ -27,20 +27,16 @@ const Draggable: DraggableComponent = ({ children, x, y }) => {
 			const bodyWidth = window.getComputedStyle(document.body).width;
 			const bodyHeight = window.getComputedStyle(document.body).height;
 			//let scale = Math.min(parseInt(bodyWidth) / 858, parseInt(bodyHeight) / 730);
+			console.log(bodyWidth, bodyHeight);
 			const scale = {
 				// TODO: should be divided by the original saved resolution
 				// NOTE: or we could save everything in 1920x1080 and rescale down to the target
-				w: parseInt(bodyWidth) / 858,
+				w: parseInt(bodyWidth) / 1440,
 				h: parseInt(bodyHeight) / 730,
 				//w: 1920 / parseInt(bodyWidth),
 				//h: 1080 / parseInt(bodyHeight),
 			}
 
-			if (parseInt(bodyWidth) == 858) {
-				//scale = 1
-				scale.w = 1;
-				scale.h = 1;
-			}
 			// 797x994
 			// 858x730
 			//transform: translate(597px, 578px);

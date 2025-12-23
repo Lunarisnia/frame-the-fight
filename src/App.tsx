@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   return (
     <>
-      <Draggable x={97} y={5}>
+      <Draggable x={138} y={5}>
         <Frame />
       </Draggable>
     </>

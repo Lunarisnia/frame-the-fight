@@ -6,5 +6,5 @@ body {
   background-image: url("example.png");
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: top;
+  background-position: top left;
 }
