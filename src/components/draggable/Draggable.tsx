@@ -1,9 +1,9 @@
 import { useEffect, useRef, type FC, type MouseEvent, type ReactNode } from "react";
 import styles from "./Draggable.module.css";
 
-type DraggableComponent = FC<{ children: ReactNode, x: number, y: number }>;
+type DraggableComponent = FC<{ children: ReactNode, x: number, y: number, setPosition: (x: number, y: number) => void }>;
 
-const Draggable: DraggableComponent = ({ children, x, y }) => {
+const Draggable: DraggableComponent = ({ children, x, y, setPosition }) => {
 	const boxRef = useRef<HTMLDivElement | null>(null);
 	let dragged = false;
 	const clickLocation = {
@@ -46,7 +46,11 @@ const Draggable: DraggableComponent = ({ children, x, y }) => {
 			//box.style.top = `${y * scale.h}px`;
 			document.addEventListener("mousemove", (e) => {
 				if (dragged) {
-					box.style.transform = `translate(${e.clientX - clickLocation.x}px, ${e.clientY - clickLocation.y}px)`
+					const xi = e.clientX - clickLocation.x;
+					const yi = e.clientY - clickLocation.y;
+					box.style.transform = `translate(${xi}px, ${yi}px)`
+					//box.style.transform = `translate(${e.clientX - clickLocation.x}px, ${e.clientY - clickLocation.y}px)`
+					setPosition(xi, yi);
 				}
 			})
 			document.addEventListener("mouseup", () => {
