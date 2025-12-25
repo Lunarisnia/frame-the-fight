@@ -1,23 +1,21 @@
-import { useEffect, useRef, type FC, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FC, type MouseEvent, type ReactNode } from "react";
 import styles from "./Draggable.module.css";
 
 type DraggableComponent = FC<{ children: ReactNode, x: number, y: number }>;
 
 const Draggable: DraggableComponent = ({ children, x, y }) => {
+	const [dragged, setDragged] = useState(false);
+	const [clickLocation, setClickLocation] = useState({ x: 0, y: 0 });
 	const boxRef = useRef<HTMLDivElement | null>(null);
-	let dragged = false;
-	const clickLocation = {
-		x: 0,
-		y: 0,
-	};
 
 	const onMouseDown = (e: MouseEvent<HTMLDivElement>) => {
 		const box = boxRef.current;
 		if (box != null) {
-			dragged = true;
+			setDragged(true);
 			const boundingBox = box.getBoundingClientRect();
-			clickLocation.x = e.clientX - boundingBox.left;
-			clickLocation.y = e.clientY - boundingBox.top;
+			const xi = e.clientX - boundingBox.left;
+			const yi = e.clientY - boundingBox.top;
+			setClickLocation({ x: xi, y: yi });
 		}
 	}
 	const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -26,10 +24,11 @@ const Draggable: DraggableComponent = ({ children, x, y }) => {
 			const xi = e.clientX - clickLocation.x;
 			const yi = e.clientY - clickLocation.y;
 			box.style.transform = `translate(${xi}px, ${yi}px)`
+			// NOTE: maybe I need to update the position in the sharing system
 		}
 	}
 	const onMouseUp = () => {
-		dragged = false;
+		setDragged(false);
 	}
 
 	useEffect(() => {
@@ -43,7 +42,7 @@ const Draggable: DraggableComponent = ({ children, x, y }) => {
 			}
 			box.style.transform = `translate(${x * scale.w}px, ${y * scale.h}px)`;
 		}
-	}, []);
+	}, [x, y]);
 
 	return <div
 		ref={boxRef}
