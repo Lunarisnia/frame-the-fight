@@ -5,16 +5,51 @@ interface Position {
 	y: number
 }
 
-interface SharingSystemContextType {
-	p1HealthBarPos: Position
+interface Player {
+	nameplate: {
+		position: Position
+		team: string
+		name: string
+	}
+	country: {
+		position: Position
+		name: string
+	}
+	score: number
+}
 
-	setP1HealthBarPos: (x: number, y: number) => void
+interface SharingSystemContextType {
+	player1: Player
+	player2: Player
+}
+
+const newPosition = () => {
+	return { x: 0, y: 0 };
 }
 
 export const SharingSystemContext = createContext<SharingSystemContextType>({
-	p1HealthBarPos: {
-		x: 0,
-		y: 0
+	player1: {
+		nameplate: {
+			position: newPosition(),
+			name: "",
+			team: ""
+		},
+		country: {
+			position: newPosition(),
+			name: ""
+		},
+		score: 0
 	},
-	setP1HealthBarPos: () => { },
+	player2: {
+		nameplate: {
+			position: newPosition(),
+			name: "",
+			team: ""
+		},
+		country: {
+			position: newPosition(),
+			name: ""
+		},
+		score: 0
+	},
 });
