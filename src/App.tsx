@@ -7,8 +7,11 @@ function App() {
   const ctx = useContext(SharingSystemContext);
   return (
     <>
-      <Draggable x={138} y={5} setPosition={ctx.setP1HealthBarPos}>
-        <Frame />
+      <Draggable x={ctx.p1HealthBarPos.x} y={ctx.p1HealthBarPos.y} >
+        <Frame src="nameplate.png" inverse={false} />
+      </Draggable>
+      <Draggable x={50} y={0} >
+        <Frame src="nameplate.png" inverse={true} />
       </Draggable>
     </>
   )

@@ -1,9 +1,9 @@
 import { useEffect, useRef, type FC, type MouseEvent, type ReactNode } from "react";
 import styles from "./Draggable.module.css";
 
-type DraggableComponent = FC<{ children: ReactNode, x: number, y: number, setPosition: (x: number, y: number) => void }>;
+type DraggableComponent = FC<{ children: ReactNode, x: number, y: number }>;
 
-const Draggable: DraggableComponent = ({ children, x, y, setPosition }) => {
+const Draggable: DraggableComponent = ({ children, x, y }) => {
 	const boxRef = useRef<HTMLDivElement | null>(null);
 	let dragged = false;
 	const clickLocation = {
@@ -20,48 +20,36 @@ const Draggable: DraggableComponent = ({ children, x, y, setPosition }) => {
 			clickLocation.y = e.clientY - boundingBox.top;
 		}
 	}
+	const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+		const box = boxRef.current;
+		if (dragged && box != null) {
+			const xi = e.clientX - clickLocation.x;
+			const yi = e.clientY - clickLocation.y;
+			box.style.transform = `translate(${xi}px, ${yi}px)`
+		}
+	}
+	const onMouseUp = () => {
+		dragged = false;
+	}
 
 	useEffect(() => {
 		const box = boxRef.current;
 		if (box != null) {
 			const bodyWidth = window.getComputedStyle(document.body).width;
 			const bodyHeight = window.getComputedStyle(document.body).height;
-			//let scale = Math.min(parseInt(bodyWidth) / 858, parseInt(bodyHeight) / 730);
-			console.log(bodyWidth, bodyHeight);
 			const scale = {
-				// TODO: should be divided by the original saved resolution
-				// NOTE: or we could save everything in 1920x1080 and rescale down to the target
-				w: parseInt(bodyWidth) / 1440,
-				h: parseInt(bodyHeight) / 730,
-				//w: 1920 / parseInt(bodyWidth),
-				//h: 1080 / parseInt(bodyHeight),
+				w: parseInt(bodyWidth) / 1920,
+				h: parseInt(bodyHeight) / 1080,
 			}
-
-			// 797x994
-			// 858x730
-			//transform: translate(597px, 578px);
-			//box.style.transform = `translate(${x * scale}px, ${y * scale}px)`;
 			box.style.transform = `translate(${x * scale.w}px, ${y * scale.h}px)`;
-			//box.style.transform = `translate(${x}px, ${y}px)`;
-			//box.style.top = `${y * scale.h}px`;
-			document.addEventListener("mousemove", (e) => {
-				if (dragged) {
-					const xi = e.clientX - clickLocation.x;
-					const yi = e.clientY - clickLocation.y;
-					box.style.transform = `translate(${xi}px, ${yi}px)`
-					//box.style.transform = `translate(${e.clientX - clickLocation.x}px, ${e.clientY - clickLocation.y}px)`
-					setPosition(xi, yi);
-				}
-			})
-			document.addEventListener("mouseup", () => {
-				dragged = false;
-			})
 		}
 	}, []);
 
 	return <div
 		ref={boxRef}
 		onMouseDown={onMouseDown}
+		onMouseMove={onMouseMove}
+		onMouseUp={onMouseUp}
 		className={`${styles.draggable}`}
 	>
 		{children}
