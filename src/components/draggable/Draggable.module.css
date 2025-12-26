@@ -2,3 +2,18 @@
 	user-select: none;
 	position: absolute;
 }
+
+.dragging {
+	user-select: none;
+}
+
+.dragging::before {
+	content: "";
+	z-index: -1;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0);
+	width: 1000px;
+	height: 1000px;
+	left: -250px;
+	top: -250px;
+}

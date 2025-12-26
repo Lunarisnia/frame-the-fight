@@ -26,6 +26,10 @@ function App() {
       <Draggable x={ctx.player2.country.position.x} y={ctx.player2.country.position.y} >
         <Frame src="country.png" inverse={false} />
       </Draggable>
+
+      <Draggable x={ctx.stage.position.x} y={ctx.stage.position.y} >
+        <Frame src="group.png" inverse={false} />
+      </Draggable>
     </>
   )
 }

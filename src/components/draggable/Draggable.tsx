@@ -49,10 +49,10 @@ const Draggable: DraggableComponent = ({ children, x, y }) => {
 		onMouseDown={onMouseDown}
 		onMouseMove={onMouseMove}
 		onMouseUp={onMouseUp}
-		className={`${styles.draggable}`}
+		className={`${styles.draggable} ${dragged ? styles.dragging : ""}`}
 	>
 		{children}
-	</div>
+	</div >
 
 }
 
