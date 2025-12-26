@@ -6,15 +6,19 @@ const newPlayerConfig = () => {
 	return {
 		nameplate: {
 			position: { x: 0, y: 0 },
+			textPosition: { x: 0, y: 0 },
+			teamTextPosition: { x: 0, y: 0 },
 			name: "",
 			team: ""
 		},
 		country: {
 			position: { x: 0, y: 0 },
+			textPosition: { x: 0, y: 0 },
 			name: ""
 		},
 		score: {
 			position: { x: 0, y: 0 },
+			textPosition: { x: 0, y: 0 },
 			value: 0,
 		},
 	};
@@ -23,7 +27,7 @@ const newPlayerConfig = () => {
 export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children }) => {
 	const [player1, setPlayer1] = useState(newPlayerConfig());
 	const [player2, _] = useState(newPlayerConfig());
-	const [stage, __] = useState({ position: { x: 0, y: 0 }, value: "" });
+	const [stage, __] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "" });
 
 	// NOTE: We can use this event to communicate from OBS script to control the web
 	window.addEventListener("myTestEvent", function() {

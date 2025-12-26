@@ -8,15 +8,19 @@ interface Position {
 interface Player {
 	nameplate: {
 		position: Position
+		textPosition: Position
+		teamTextPosition: Position
 		team: string
 		name: string
 	}
 	country: {
 		position: Position
+		textPosition: Position
 		name: string
 	}
 	score: {
 		position: Position,
+		textPosition: Position
 		value: number
 	}
 }
@@ -26,6 +30,7 @@ interface SharingSystemContextType {
 	player2: Player
 	stage: {
 		position: Position,
+		textPosition: Position
 		value: string
 	}
 }
@@ -38,35 +43,44 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 	player1: {
 		nameplate: {
 			position: newPosition(),
+			teamTextPosition: newPosition(),
+			textPosition: newPosition(),
 			name: "",
 			team: ""
 		},
 		country: {
 			position: newPosition(),
+			textPosition: newPosition(),
 			name: ""
 		},
 		score: {
 			position: newPosition(),
+			textPosition: newPosition(),
 			value: 0,
 		},
 	},
 	player2: {
 		nameplate: {
 			position: newPosition(),
+			teamTextPosition: newPosition(),
+			textPosition: newPosition(),
 			name: "",
 			team: ""
 		},
 		country: {
 			position: newPosition(),
+			textPosition: newPosition(),
 			name: ""
 		},
 		score: {
 			position: newPosition(),
+			textPosition: newPosition(),
 			value: 0,
 		},
 	},
 	stage: {
 		position: newPosition(),
+		textPosition: newPosition(),
 		value: "",
 	}
 });
