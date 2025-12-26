@@ -15,12 +15,19 @@ interface Player {
 		position: Position
 		name: string
 	}
-	score: number
+	score: {
+		position: Position,
+		value: number
+	}
 }
 
 interface SharingSystemContextType {
 	player1: Player
 	player2: Player
+	stage: {
+		position: Position,
+		value: string
+	}
 }
 
 const newPosition = () => {
@@ -38,7 +45,10 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			position: newPosition(),
 			name: ""
 		},
-		score: 0
+		score: {
+			position: newPosition(),
+			value: 0,
+		},
 	},
 	player2: {
 		nameplate: {
@@ -50,6 +60,13 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			position: newPosition(),
 			name: ""
 		},
-		score: 0
+		score: {
+			position: newPosition(),
+			value: 0,
+		},
 	},
+	stage: {
+		position: newPosition(),
+		value: "",
+	}
 });

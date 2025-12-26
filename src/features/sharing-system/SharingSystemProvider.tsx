@@ -13,13 +13,17 @@ const newPlayerConfig = () => {
 			position: { x: 0, y: 0 },
 			name: ""
 		},
-		score: 0
+		score: {
+			position: { x: 0, y: 0 },
+			value: 0,
+		},
 	};
 }
 
 export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children }) => {
 	const [player1, setPlayer1] = useState(newPlayerConfig());
 	const [player2, _] = useState(newPlayerConfig());
+	const [stage, __] = useState({ position: { x: 0, y: 0 }, value: "" });
 
 	// NOTE: We can use this event to communicate from OBS script to control the web
 	window.addEventListener("myTestEvent", function() {
@@ -36,7 +40,7 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	})
 
 	return (
-		<SharingSystemContext.Provider value={{ player1, player2 }}>
+		<SharingSystemContext.Provider value={{ player1, player2, stage }}>
 			{children}
 		</SharingSystemContext.Provider>
 	);
