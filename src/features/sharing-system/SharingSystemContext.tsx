@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { country } from '../../constants/country';
 
 interface Position {
 	x: number
@@ -51,7 +52,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 		country: {
 			position: newPosition(),
 			textPosition: newPosition(),
-			name: ""
+			name: country["ID"]
 		},
 		score: {
 			position: newPosition(),
@@ -70,7 +71,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 		country: {
 			position: newPosition(),
 			textPosition: newPosition(),
-			name: ""
+			name: country["UK"]
 		},
 		score: {
 			position: newPosition(),

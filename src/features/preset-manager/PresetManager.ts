@@ -1,3 +1,4 @@
+import { country } from "../../constants/country";
 import type { SharingSystemContextType } from "../sharing-system/SharingSystemContext"
 
 interface Preset {
@@ -35,7 +36,7 @@ const preset: Preset = {
 					x: 195,
 					y: 0
 				},
-				name: "id"
+				name: country["ID"]
 			},
 			score: {
 				position: {
@@ -75,7 +76,7 @@ const preset: Preset = {
 					x: 1686,
 					y: 0
 				},
-				name: "id"
+				name: country["GB"]
 			},
 			score: {
 				position: {

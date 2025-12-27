@@ -26,7 +26,7 @@ const newPlayerConfig = () => {
 }
 
 
-export const setScore = (player: Player, setPlayer: (player: Player) => void, score: number) => {
+const setScore = (player: Player, setPlayer: (player: Player) => void, score: number) => {
 	setPlayer({
 		...player,
 		score: {
