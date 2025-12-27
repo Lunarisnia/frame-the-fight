@@ -100,7 +100,8 @@ const preset: Preset = {
 				y: -22,
 			},
 			value: "Grand Final"
-		}
+		},
+		font: "Roboto"
 	},
 	streetFighter6: {
 		player1: {
@@ -163,7 +164,8 @@ const preset: Preset = {
 			position: { x: 0, y: 0 },
 			textPosition: { x: 0, y: 0 },
 			value: ""
-		}
+		},
+		font: "Roboto"
 	}
 }
 
