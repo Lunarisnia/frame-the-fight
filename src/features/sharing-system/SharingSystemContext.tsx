@@ -34,6 +34,7 @@ export interface SharingSystemContextType {
 		textPosition: Position
 		value: string
 	}
+	font: string
 }
 
 const newPosition = () => {
@@ -83,5 +84,6 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 		position: newPosition(),
 		textPosition: newPosition(),
 		value: "",
-	}
+	},
+	font: "",
 });
