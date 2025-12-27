@@ -1,5 +1,4 @@
 import { createContext } from 'react';
-import { country } from '../../constants/country';
 
 interface Position {
 	x: number
@@ -13,16 +12,20 @@ export interface Player {
 		teamTextPosition: Position
 		team: string
 		name: string
+		nameFontSize: number,
+		teamFontSize: number,
 	}
 	country: {
 		position: Position
 		textPosition: Position
 		name: string
+		fontSize: number,
 	}
 	score: {
 		position: Position,
 		textPosition: Position
 		value: number
+		fontSize: number,
 	}
 }
 
@@ -33,6 +36,7 @@ export interface SharingSystemContextType {
 		position: Position,
 		textPosition: Position
 		value: string
+		fontSize: number,
 	}
 	font: string
 }
@@ -48,17 +52,21 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			teamTextPosition: newPosition(),
 			textPosition: newPosition(),
 			name: "",
-			team: ""
+			team: "",
+			nameFontSize: 14,
+			teamFontSize: 14,
 		},
 		country: {
 			position: newPosition(),
 			textPosition: newPosition(),
-			name: country["ID"]
+			name: "",
+			fontSize: 14,
 		},
 		score: {
 			position: newPosition(),
 			textPosition: newPosition(),
 			value: 0,
+			fontSize: 14,
 		},
 	},
 	player2: {
@@ -67,22 +75,27 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			teamTextPosition: newPosition(),
 			textPosition: newPosition(),
 			name: "",
-			team: ""
+			team: "",
+			nameFontSize: 14,
+			teamFontSize: 14,
 		},
 		country: {
 			position: newPosition(),
 			textPosition: newPosition(),
-			name: country["UK"]
+			name: "",
+			fontSize: 14
 		},
 		score: {
 			position: newPosition(),
 			textPosition: newPosition(),
 			value: 0,
+			fontSize: 14,
 		},
 	},
 	stage: {
 		position: newPosition(),
 		textPosition: newPosition(),
+		fontSize: 14,
 		value: "",
 	},
 	font: "",

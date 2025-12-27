@@ -11,17 +11,21 @@ const newPlayerConfig = () => {
 			textPosition: { x: 0, y: 0 },
 			teamTextPosition: { x: 0, y: 0 },
 			name: "",
-			team: ""
+			team: "",
+			teamFontSize: 14,
+			nameFontSize: 14,
 		},
 		country: {
 			position: { x: 0, y: 0 },
 			textPosition: { x: 0, y: 0 },
-			name: ""
+			name: "",
+			fontSize: 14,
 		},
 		score: {
 			position: { x: 0, y: 0 },
 			textPosition: { x: 0, y: 0 },
 			value: 0,
+			fontSize: 14,
 		},
 	};
 }
@@ -41,7 +45,7 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	const [activePreset, ___] = useState<Game>("tekken8");
 	const [player1, setPlayer1] = useState(newPlayerConfig());
 	const [player2, setPlayer2] = useState(newPlayerConfig());
-	const [stage, setStage] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "" });
+	const [stage, setStage] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, });
 	const [font, __] = useState("Roboto");
 	const p = getPreset(activePreset);
 

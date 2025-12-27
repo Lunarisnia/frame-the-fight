@@ -25,7 +25,9 @@ const preset: Preset = {
 					y: 0,
 				},
 				name: "Player 1",
-				team: "TEAM1"
+				team: "TEAM1",
+				nameFontSize: 15,
+				teamFontSize: 15,
 			},
 			country: {
 				position: {
@@ -36,7 +38,8 @@ const preset: Preset = {
 					x: 195,
 					y: 0
 				},
-				name: country["ID"]
+				name: country["ID"],
+				fontSize: 15,
 			},
 			score: {
 				position: {
@@ -48,6 +51,7 @@ const preset: Preset = {
 					y: 0
 				},
 				value: 0,
+				fontSize: 15,
 			},
 		},
 		player2: {
@@ -65,7 +69,9 @@ const preset: Preset = {
 					y: 0
 				},
 				name: "Player 2 (L)",
-				team: "TEAM2"
+				team: "TEAM2",
+				nameFontSize: 15,
+				teamFontSize: 15,
 			},
 			country: {
 				position: {
@@ -76,7 +82,8 @@ const preset: Preset = {
 					x: 1686,
 					y: 0
 				},
-				name: country["GB"]
+				name: country["GB"],
+				fontSize: 15,
 			},
 			score: {
 				position: {
@@ -88,6 +95,7 @@ const preset: Preset = {
 					y: 0
 				},
 				value: 0,
+				fontSize: 15,
 			},
 		},
 		stage: {
@@ -99,7 +107,8 @@ const preset: Preset = {
 				x: 872,
 				y: -22,
 			},
-			value: "Grand Final"
+			value: "Grand Final",
+			fontSize: 15,
 		},
 		font: "Roboto"
 	},
@@ -113,7 +122,9 @@ const preset: Preset = {
 				textPosition: { x: 0, y: 0 },
 				teamTextPosition: { x: 0, y: 0 },
 				name: "",
-				team: ""
+				team: "",
+				nameFontSize: 14,
+				teamFontSize: 14,
 			},
 			country: {
 				position: {
@@ -121,7 +132,8 @@ const preset: Preset = {
 					y: 10,
 				},
 				textPosition: { x: 0, y: 0 },
-				name: ""
+				name: "",
+				fontSize: 14,
 			},
 			score: {
 				position: {
@@ -130,6 +142,7 @@ const preset: Preset = {
 				},
 				textPosition: { x: 0, y: 0 },
 				value: 0,
+				fontSize: 14,
 			},
 		},
 		player2: {
@@ -141,7 +154,9 @@ const preset: Preset = {
 				textPosition: { x: 0, y: 0 },
 				teamTextPosition: { x: 0, y: 0 },
 				name: "",
-				team: ""
+				team: "",
+				nameFontSize: 14,
+				teamFontSize: 14,
 			},
 			country: {
 				position: {
@@ -149,7 +164,8 @@ const preset: Preset = {
 					y: 10,
 				},
 				textPosition: { x: 0, y: 0 },
-				name: ""
+				name: "",
+				fontSize: 14,
 			},
 			score: {
 				position: {
@@ -158,12 +174,14 @@ const preset: Preset = {
 				},
 				textPosition: { x: 0, y: 0 },
 				value: 0,
+				fontSize: 14,
 			},
 		},
 		stage: {
 			position: { x: 0, y: 0 },
 			textPosition: { x: 0, y: 0 },
-			value: ""
+			value: "",
+			fontSize: 14,
 		},
 		font: "Roboto"
 	}

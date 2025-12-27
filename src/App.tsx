@@ -33,49 +33,49 @@ function App() {
       </Draggable>
 
       <Draggable x={ctx.player1.nameplate.teamTextPosition.x} y={ctx.player1.nameplate.teamTextPosition.y}>
-        <FancyText color={"#FF0000"} font={ctx.font}>
+        <FancyText color={"#FF0000"} font={ctx.font} fontSize={ctx.player1.nameplate.teamFontSize}>
           {ctx.player1.nameplate.team}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player1.nameplate.textPosition.x} y={ctx.player1.nameplate.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.player1.nameplate.nameFontSize}>
           {ctx.player1.nameplate.name}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player1.country.textPosition.x} y={ctx.player1.country.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.player1.country.fontSize}>
           {ctx.player1.country.name}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player1.score.textPosition.x} y={ctx.player1.score.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.player1.score.fontSize}>
           {ctx.player1.score.value}
         </FancyText>
       </Draggable>
 
       <Draggable x={ctx.player2.nameplate.teamTextPosition.x} y={ctx.player2.nameplate.teamTextPosition.y}>
-        <FancyText color={"#FF0000"} font={ctx.font}>
+        <FancyText color={"#FF0000"} font={ctx.font} fontSize={ctx.player2.nameplate.teamFontSize}>
           {ctx.player2.nameplate.team}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player2.nameplate.textPosition.x} y={ctx.player2.nameplate.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.player2.nameplate.nameFontSize}>
           {ctx.player2.nameplate.name}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player2.country.textPosition.x} y={ctx.player2.country.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.player2.country.fontSize}>
           {ctx.player2.country.name}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player2.score.textPosition.x} y={ctx.player2.score.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.player2.score.fontSize}>
           {ctx.player2.score.value}
         </FancyText>
       </Draggable>
 
       <Draggable x={ctx.stage.textPosition.x} y={ctx.stage.textPosition.y}>
-        <FancyText color={"#FFFFFF"} font={ctx.font}>
+        <FancyText color={"#FFFFFF"} font={ctx.font} fontSize={ctx.stage.fontSize}>
           {ctx.stage.value}
         </FancyText>
       </Draggable>
