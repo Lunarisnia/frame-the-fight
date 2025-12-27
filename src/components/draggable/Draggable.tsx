@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type FC, type MouseEvent, type ReactNode } from "react";
 import styles from "./Draggable.module.css";
 
-type DraggableComponent = FC<{ children: ReactNode, x: number, y: number }>;
+type DraggableComponent = FC<{ children: ReactNode, x: number, y: number, visible?: boolean }>;
 
-const Draggable: DraggableComponent = ({ children, x, y }) => {
+const Draggable: DraggableComponent = ({ children, x, y, visible = true }) => {
 	const [dragged, setDragged] = useState(false);
 	const [clickLocation, setClickLocation] = useState({ x: 0, y: 0 });
 	const boxRef = useRef<HTMLDivElement | null>(null);
@@ -42,14 +42,14 @@ const Draggable: DraggableComponent = ({ children, x, y }) => {
 			}
 			box.style.transform = `translate(${x * scale.w}px, ${y * scale.h}px)`;
 		}
-	}, [x, y]);
+	}, [x, y, visible]);
 
 	return <div
 		ref={boxRef}
 		onMouseDown={onMouseDown}
 		onMouseMove={onMouseMove}
 		onMouseUp={onMouseUp}
-		className={`${styles.draggable} ${dragged ? styles.dragging : ""}`}
+		className={`${styles.draggable} ${dragged ? styles.dragging : ""} ${visible ? "" : styles.invisible}`}
 	>
 		{children}
 	</div >

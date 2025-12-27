@@ -14,18 +14,21 @@ export interface Player {
 		name: string
 		nameFontSize: number,
 		teamFontSize: number,
+		visible: boolean,
 	}
 	country: {
 		position: Position
 		textPosition: Position
 		name: string
 		fontSize: number,
+		visible: boolean,
 	}
 	score: {
 		position: Position,
 		textPosition: Position
 		value: number
 		fontSize: number,
+		visible: boolean,
 	}
 }
 
@@ -37,6 +40,7 @@ export interface SharingSystemContextType {
 		textPosition: Position
 		value: string
 		fontSize: number,
+		visible: boolean,
 	}
 	font: string
 }
@@ -55,18 +59,21 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			team: "",
 			nameFontSize: 14,
 			teamFontSize: 14,
+			visible: true,
 		},
 		country: {
 			position: newPosition(),
 			textPosition: newPosition(),
 			name: "",
 			fontSize: 14,
+			visible: true,
 		},
 		score: {
 			position: newPosition(),
 			textPosition: newPosition(),
 			value: 0,
 			fontSize: 14,
+			visible: true,
 		},
 	},
 	player2: {
@@ -78,18 +85,21 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			team: "",
 			nameFontSize: 14,
 			teamFontSize: 14,
+			visible: true,
 		},
 		country: {
 			position: newPosition(),
 			textPosition: newPosition(),
 			name: "",
-			fontSize: 14
+			fontSize: 14,
+			visible: true,
 		},
 		score: {
 			position: newPosition(),
 			textPosition: newPosition(),
 			value: 0,
 			fontSize: 14,
+			visible: true,
 		},
 	},
 	stage: {
@@ -97,6 +107,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 		textPosition: newPosition(),
 		fontSize: 14,
 		value: "",
+		visible: true,
 	},
 	font: "",
 });

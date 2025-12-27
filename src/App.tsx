@@ -8,29 +8,30 @@ function App() {
   const ctx = useContext(SharingSystemContext);
   return (
     <>
-      <Draggable x={ctx.player1.nameplate.position.x} y={ctx.player1.nameplate.position.y} >
+      <Draggable x={ctx.player1.nameplate.position.x} y={ctx.player1.nameplate.position.y} visible={ctx.player1.nameplate.visible} >
         <Frame src="nameplate.png" inverse={false} />
       </Draggable>
-      <Draggable x={ctx.player1.score.position.x} y={ctx.player1.score.position.y} >
+      <Draggable x={ctx.player1.score.position.x} y={ctx.player1.score.position.y} visible={ctx.player1.score.visible}>
         <Frame src="score.png" inverse={false} />
       </Draggable>
-      <Draggable x={ctx.player1.country.position.x} y={ctx.player1.country.position.y} >
+      <Draggable x={ctx.player1.country.position.x} y={ctx.player1.country.position.y} visible={ctx.player1.country.visible}>
         <Frame src="country.png" inverse={false} />
       </Draggable>
 
-      <Draggable x={ctx.player2.nameplate.position.x} y={ctx.player2.nameplate.position.y} >
+      <Draggable x={ctx.player2.nameplate.position.x} y={ctx.player2.nameplate.position.y} visible={ctx.player2.nameplate.visible}>
         <Frame src="nameplate.png" inverse={true} />
       </Draggable>
-      <Draggable x={ctx.player2.score.position.x} y={ctx.player2.score.position.y} >
+      <Draggable x={ctx.player2.score.position.x} y={ctx.player2.score.position.y} visible={ctx.player2.score.visible}>
         <Frame src="score.png" inverse={true} />
       </Draggable>
-      <Draggable x={ctx.player2.country.position.x} y={ctx.player2.country.position.y} >
+      <Draggable x={ctx.player2.country.position.x} y={ctx.player2.country.position.y} visible={ctx.player2.country.visible}>
         <Frame src="country.png" inverse={true} />
       </Draggable>
 
-      <Draggable x={ctx.stage.position.x} y={ctx.stage.position.y} >
+      <Draggable x={ctx.stage.position.x} y={ctx.stage.position.y} visible={ctx.stage.visible}>
         <Frame src="group.png" inverse={false} />
       </Draggable>
+
 
       <Draggable x={ctx.player1.nameplate.teamTextPosition.x} y={ctx.player1.nameplate.teamTextPosition.y}>
         <FancyText color={"#FF0000"} font={ctx.font} fontSize={ctx.player1.nameplate.teamFontSize}>

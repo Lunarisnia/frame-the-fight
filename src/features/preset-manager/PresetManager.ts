@@ -28,6 +28,7 @@ const preset: Preset = {
 				team: "TEAM1",
 				nameFontSize: 15,
 				teamFontSize: 15,
+				visible: true,
 			},
 			country: {
 				position: {
@@ -40,6 +41,7 @@ const preset: Preset = {
 				},
 				name: country["ID"],
 				fontSize: 15,
+				visible: true,
 			},
 			score: {
 				position: {
@@ -52,6 +54,7 @@ const preset: Preset = {
 				},
 				value: 0,
 				fontSize: 15,
+				visible: true,
 			},
 		},
 		player2: {
@@ -72,6 +75,7 @@ const preset: Preset = {
 				team: "TEAM2",
 				nameFontSize: 15,
 				teamFontSize: 15,
+				visible: true,
 			},
 			country: {
 				position: {
@@ -84,6 +88,7 @@ const preset: Preset = {
 				},
 				name: country["GB"],
 				fontSize: 15,
+				visible: true,
 			},
 			score: {
 				position: {
@@ -96,6 +101,7 @@ const preset: Preset = {
 				},
 				value: 0,
 				fontSize: 15,
+				visible: true,
 			},
 		},
 		stage: {
@@ -109,6 +115,7 @@ const preset: Preset = {
 			},
 			value: "Grand Final",
 			fontSize: 15,
+			visible: true,
 		},
 		font: "Roboto"
 	},
@@ -125,6 +132,7 @@ const preset: Preset = {
 				team: "",
 				nameFontSize: 14,
 				teamFontSize: 14,
+				visible: true,
 			},
 			country: {
 				position: {
@@ -134,6 +142,7 @@ const preset: Preset = {
 				textPosition: { x: 0, y: 0 },
 				name: "",
 				fontSize: 14,
+				visible: true,
 			},
 			score: {
 				position: {
@@ -143,6 +152,7 @@ const preset: Preset = {
 				textPosition: { x: 0, y: 0 },
 				value: 0,
 				fontSize: 14,
+				visible: true,
 			},
 		},
 		player2: {
@@ -157,6 +167,7 @@ const preset: Preset = {
 				team: "",
 				nameFontSize: 14,
 				teamFontSize: 14,
+				visible: true,
 			},
 			country: {
 				position: {
@@ -166,6 +177,7 @@ const preset: Preset = {
 				textPosition: { x: 0, y: 0 },
 				name: "",
 				fontSize: 14,
+				visible: true,
 			},
 			score: {
 				position: {
@@ -175,6 +187,7 @@ const preset: Preset = {
 				textPosition: { x: 0, y: 0 },
 				value: 0,
 				fontSize: 14,
+				visible: true,
 			},
 		},
 		stage: {
@@ -182,6 +195,7 @@ const preset: Preset = {
 			textPosition: { x: 0, y: 0 },
 			value: "",
 			fontSize: 14,
+			visible: true,
 		},
 		font: "Roboto"
 	}
