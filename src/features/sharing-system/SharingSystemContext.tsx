@@ -5,7 +5,7 @@ interface Position {
 	y: number
 }
 
-interface Player {
+export interface Player {
 	nameplate: {
 		position: Position
 		textPosition: Position
@@ -25,7 +25,7 @@ interface Player {
 	}
 }
 
-interface SharingSystemContextType {
+export interface SharingSystemContextType {
 	player1: Player
 	player2: Player
 	stage: {

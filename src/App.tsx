@@ -33,34 +33,54 @@ function App() {
       </Draggable>
 
       <Draggable x={ctx.player1.nameplate.teamTextPosition.x} y={ctx.player1.nameplate.teamTextPosition.y}>
-        <FancyText color={"#FFFFFF"}>
-          TEAM1
+        <FancyText color={"#FF0000"}>
+          {ctx.player1.nameplate.team}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player1.nameplate.textPosition.x} y={ctx.player1.nameplate.textPosition.y}>
         <FancyText color={"#FFFFFF"}>
-          Player 1
+          {ctx.player1.nameplate.name}
         </FancyText>
       </Draggable>
-      <Draggable x={ctx.player2.nameplate.teamTextPosition.x} y={ctx.player2.nameplate.teamTextPosition.y}>
+      <Draggable x={ctx.player1.country.textPosition.x} y={ctx.player1.country.textPosition.y}>
         <FancyText color={"#FFFFFF"}>
-          TEAM2
+          {ctx.player1.country.name}
+        </FancyText>
+      </Draggable>
+      <Draggable x={ctx.player1.score.textPosition.x} y={ctx.player1.score.textPosition.y}>
+        <FancyText color={"#FFFFFF"}>
+          {ctx.player1.score.value}
+        </FancyText>
+      </Draggable>
+
+      <Draggable x={ctx.player2.nameplate.teamTextPosition.x} y={ctx.player2.nameplate.teamTextPosition.y}>
+        <FancyText color={"#FF0000"}>
+          {ctx.player2.nameplate.team}
         </FancyText>
       </Draggable>
       <Draggable x={ctx.player2.nameplate.textPosition.x} y={ctx.player2.nameplate.textPosition.y}>
         <FancyText color={"#FFFFFF"}>
-          Player 2
+          {ctx.player2.nameplate.name}
+        </FancyText>
+      </Draggable>
+      <Draggable x={ctx.player2.country.textPosition.x} y={ctx.player2.country.textPosition.y}>
+        <FancyText color={"#FFFFFF"}>
+          {ctx.player2.country.name}
+        </FancyText>
+      </Draggable>
+      <Draggable x={ctx.player2.score.textPosition.x} y={ctx.player2.score.textPosition.y}>
+        <FancyText color={"#FFFFFF"}>
+          {ctx.player2.score.value}
         </FancyText>
       </Draggable>
 
       <Draggable x={ctx.stage.textPosition.x} y={ctx.stage.textPosition.y}>
         <FancyText color={"#FFFFFF"}>
-          Grand Final
+          {ctx.stage.value}
         </FancyText>
       </Draggable>
     </>
   )
 }
-
 
 export default App
