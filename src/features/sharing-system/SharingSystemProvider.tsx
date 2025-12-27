@@ -56,7 +56,9 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		setPlayer1(p.player1);
 		setPlayer2(p.player2);
 		setStage(p.stage);
+		console.log("RAN")
 	}, [activePreset])
+
 	useEffect(() => {
 		WebFont.load({
 			google: {
