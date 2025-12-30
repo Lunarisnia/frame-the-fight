@@ -36,11 +36,19 @@ export interface SharingSystemContextType {
 	player1: Player
 	player2: Player
 	stage: {
-		position: Position,
+		position: Position
 		textPosition: Position
 		value: string
-		fontSize: number,
-		visible: boolean,
+		fontSize: number
+		visible: boolean
+	}
+	logo: {
+		position: Position
+		visible: boolean
+		size: {
+			w: number
+			h: number
+		},
 	}
 	font: string
 }
@@ -107,6 +115,10 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 		textPosition: newPosition(),
 		fontSize: 14,
 		value: "",
+		visible: true,
+	},
+	logo: {
+		position: newPosition(),
 		visible: true,
 	},
 	font: "",

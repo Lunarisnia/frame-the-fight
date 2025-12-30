@@ -32,6 +32,10 @@ function App() {
         <Frame src="group.png" inverse={false} />
       </Draggable>
 
+      <Draggable x={ctx.logo.position.x} y={ctx.logo.position.y}>
+        <Frame src="logo.png" inverse={false} width={ctx.logo.size.w} height={ctx.logo.size.h} />
+      </Draggable>
+
 
       <Draggable x={ctx.player1.nameplate.teamTextPosition.x} y={ctx.player1.nameplate.teamTextPosition.y}>
         <FancyText color={"#FF0000"} font={ctx.font} fontSize={ctx.player1.nameplate.teamFontSize}>

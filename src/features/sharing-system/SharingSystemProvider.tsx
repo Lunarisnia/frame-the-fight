@@ -49,14 +49,16 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	const [player1, setPlayer1] = useState(newPlayerConfig());
 	const [player2, setPlayer2] = useState(newPlayerConfig());
 	const [stage, setStage] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
-	const [font, __] = useState("Roboto");
+	const [logo, setLogo] = useState({ position: { x: 0, y: 0 }, size: { w: 180, h: 180 }, visible: true });
+	const [font, setFont] = useState("Roboto");
 	const p = getPreset(activePreset);
 
 	useEffect(() => {
 		setPlayer1(p.player1);
 		setPlayer2(p.player2);
 		setStage(p.stage);
-		console.log("RAN")
+		setLogo(p.logo);
+		setFont(p.font);
 	}, [activePreset])
 
 	useEffect(() => {
@@ -73,7 +75,7 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	})
 
 	return (
-		<SharingSystemContext.Provider value={{ player1, player2, stage, font }}>
+		<SharingSystemContext.Provider value={{ player1, player2, stage, font, logo }}>
 			{children}
 		</SharingSystemContext.Provider>
 	);

@@ -117,7 +117,18 @@ const preset: Preset = {
 			fontSize: 15,
 			visible: true,
 		},
-		font: "Roboto"
+		font: '"Roboto"',
+		logo: {
+			position: {
+				x: 862,
+				y: 900,
+			},
+			size: {
+				w: 180,
+				h: 180,
+			},
+			visible: true,
+		},
 	},
 	streetFighter6: {
 		player1: {
@@ -197,7 +208,18 @@ const preset: Preset = {
 			fontSize: 14,
 			visible: true,
 		},
-		font: "Roboto"
+		font: "Roboto",
+		logo: {
+			position: {
+				x: 862,
+				y: 900,
+			},
+			size: {
+				w: 180,
+				h: 180,
+			},
+			visible: true,
+		},
 	}
 }
 
