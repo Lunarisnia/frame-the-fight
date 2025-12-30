@@ -1,3 +1,5 @@
 .fancyText {
 	user-select: none;
+	justify-content: center;
+	text-align: center;
 }

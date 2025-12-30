@@ -1,5 +1,7 @@
-import { useState, type FC, type ReactNode } from 'react';
-import { SharingSystemContext } from './SharingSystemContext';
+import { useEffect, useState, type FC, type ReactNode } from 'react';
+import { SharingSystemContext, type Player } from './SharingSystemContext';
+import { getPreset, type Game } from '../preset-manager/PresetManager';
+import WebFont from 'webfontloader';
 
 
 const newPlayerConfig = () => {
@@ -9,42 +11,69 @@ const newPlayerConfig = () => {
 			textPosition: { x: 0, y: 0 },
 			teamTextPosition: { x: 0, y: 0 },
 			name: "",
-			team: ""
+			team: "",
+			teamFontSize: 14,
+			nameFontSize: 14,
+			visible: true,
 		},
 		country: {
 			position: { x: 0, y: 0 },
 			textPosition: { x: 0, y: 0 },
-			name: ""
+			name: "",
+			fontSize: 14,
+			visible: true,
 		},
 		score: {
 			position: { x: 0, y: 0 },
 			textPosition: { x: 0, y: 0 },
 			value: 0,
+			fontSize: 14,
+			visible: true,
 		},
 	};
 }
 
+
+const setScore = (player: Player, setPlayer: (player: Player) => void, score: number) => {
+	setPlayer({
+		...player,
+		score: {
+			...player.score,
+			value: score,
+		}
+	});
+}
+
 export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children }) => {
+	const [activePreset, ___] = useState<Game>("tekken8");
 	const [player1, setPlayer1] = useState(newPlayerConfig());
-	const [player2, _] = useState(newPlayerConfig());
-	const [stage, __] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "" });
+	const [player2, setPlayer2] = useState(newPlayerConfig());
+	const [stage, setStage] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
+	const [font, __] = useState("Roboto");
+	const p = getPreset(activePreset);
+
+	useEffect(() => {
+		setPlayer1(p.player1);
+		setPlayer2(p.player2);
+		setStage(p.stage);
+		console.log("RAN")
+	}, [activePreset])
+
+	useEffect(() => {
+		WebFont.load({
+			google: {
+				families: [font]
+			}
+		});
+	}, [])
 
 	// NOTE: We can use this event to communicate from OBS script to control the web
 	window.addEventListener("myTestEvent", function() {
-		setPlayer1({
-			...player1,
-			nameplate: {
-				...player1.nameplate,
-				position: {
-					x: player1.nameplate.position.x + 20,
-					y: player1.nameplate.position.y + 20,
-				}
-			}
-		});
+		setScore(player1, setPlayer1, player1.score.value + 1);
 	})
 
 	return (
-		<SharingSystemContext.Provider value={{ player1, player2, stage }}>
+		<SharingSystemContext.Provider value={{ player1, player2, stage, font }}>
 			{children}
 		</SharingSystemContext.Provider>
 	);

@@ -1,6 +1,7 @@
 .draggable {
 	user-select: none;
 	position: absolute;
+	visibility: visible;
 }
 
 .dragging {
@@ -16,4 +17,8 @@
 	height: 1000px;
 	left: -250px;
 	top: -250px;
+}
+
+.invisible {
+	visibility: hidden;
 }
