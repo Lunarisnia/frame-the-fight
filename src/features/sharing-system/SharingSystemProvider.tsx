@@ -44,6 +44,20 @@ const setScore = (player: Player, setPlayer: (player: Player) => void, score: nu
 	});
 }
 
+const setHealthbarPosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
+	setPlayer({
+		...player,
+		nameplate: {
+			...player.nameplate,
+			position: {
+				x: x,
+				y: y,
+			}
+		}
+	})
+
+}
+
 export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children }) => {
 	const [activePreset, ___] = useState<Game>("tekken8");
 	const [player1, setPlayer1] = useState(newPlayerConfig());
@@ -61,6 +75,10 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		setFont(p.font);
 	}, [activePreset])
 
+	const setPlayer1HealthPos = (x: number, y: number) => {
+		setHealthbarPosition(player1, setPlayer1, x, y);
+	}
+
 	useEffect(() => {
 		WebFont.load({
 			google: {
@@ -75,7 +93,7 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	})
 
 	return (
-		<SharingSystemContext.Provider value={{ player1, player2, stage, font, logo }}>
+		<SharingSystemContext.Provider value={{ player1, player2, stage, font, logo, setPlayer1HealthPosPosition: setPlayer1HealthPos }}>
 			{children}
 		</SharingSystemContext.Provider>
 	);

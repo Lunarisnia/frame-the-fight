@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type FC, type MouseEvent, type ReactNode } from "react";
 import styles from "./Draggable.module.css";
 
-type DraggableComponent = FC<{ children: ReactNode, x: number, y: number, visible?: boolean }>;
+type DraggableComponent = FC<{ children: ReactNode, x: number, y: number, visible?: boolean, setPosition?: (x: number, y: number) => void }>;
 
-const Draggable: DraggableComponent = ({ children, x, y, visible = true }) => {
+const Draggable: DraggableComponent = ({ children, x, y, setPosition, visible = true }) => {
 	const [dragged, setDragged] = useState(false);
 	const [clickLocation, setClickLocation] = useState({ x: 0, y: 0 });
 	const boxRef = useRef<HTMLDivElement | null>(null);
@@ -24,6 +24,9 @@ const Draggable: DraggableComponent = ({ children, x, y, visible = true }) => {
 			const xi = e.clientX - clickLocation.x;
 			const yi = e.clientY - clickLocation.y;
 			box.style.transform = `translate(${xi}px, ${yi}px)`
+			if (setPosition != undefined) {
+				setPosition(xi, yi)
+			}
 			// NOTE: maybe I need to update the position in the sharing system
 		}
 	}

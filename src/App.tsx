@@ -8,7 +8,7 @@ function App() {
   const ctx = useContext(SharingSystemContext);
   return (
     <>
-      <Draggable x={ctx.player1.nameplate.position.x} y={ctx.player1.nameplate.position.y} visible={ctx.player1.nameplate.visible} >
+      <Draggable x={ctx.player1.nameplate.position.x} y={ctx.player1.nameplate.position.y} visible={ctx.player1.nameplate.visible} setPosition={ctx.setPlayer1HealthPosPosition} >
         <Frame src="nameplate.png" inverse={false} />
       </Draggable>
       <Draggable x={ctx.player1.score.position.x} y={ctx.player1.score.position.y} visible={ctx.player1.score.visible}>
