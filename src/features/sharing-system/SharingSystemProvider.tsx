@@ -3,6 +3,11 @@ import { SharingSystemContext, type Player } from './SharingSystemContext';
 import { getPreset, type Game } from '../preset-manager/PresetManager';
 import WebFont from 'webfontloader';
 
+interface UpdateNameEvent {
+	detail: {
+		name: string
+	}
+}
 
 const newPlayerConfig = () => {
 	return {
@@ -33,6 +38,15 @@ const newPlayerConfig = () => {
 	};
 }
 
+const setName = (player: Player, setPlayer: (player: Player) => void, name: string) => {
+	setPlayer({
+		...player,
+		nameplate: {
+			...player.nameplate,
+			name: name,
+		}
+	});
+}
 
 const setScore = (player: Player, setPlayer: (player: Player) => void, score: number) => {
 	setPlayer({
@@ -90,6 +104,10 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	// NOTE: We can use this event to communicate from OBS script to control the web
 	window.addEventListener("myTestEvent", function() {
 		setScore(player1, setPlayer1, player1.score.value + 1);
+	})
+	window.addEventListener("player1_name", (payload: Event) => {
+		const d = payload as any as UpdateNameEvent;
+		setName(player1, setPlayer1, `${d.detail.name}`)
 	})
 
 	return (
