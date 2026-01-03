@@ -2,8 +2,24 @@ import { useEffect, useState, type FC, type ReactNode } from 'react';
 import { SharingSystemContext, type Player } from './SharingSystemContext';
 import { getPreset, type Game } from '../preset-manager/PresetManager';
 import WebFont from 'webfontloader';
+import { country } from '../../constants/country';
 
 interface UpdateNameEvent {
+	detail: {
+		name: string
+	}
+}
+interface UpdateTeamEvent {
+	detail: {
+		name: string
+	}
+}
+interface UpdateScoreEvent {
+	detail: {
+		score: number
+	}
+}
+interface UpdateCountryEvent {
 	detail: {
 		name: string
 	}
@@ -44,6 +60,26 @@ const setName = (player: Player, setPlayer: (player: Player) => void, name: stri
 		nameplate: {
 			...player.nameplate,
 			name: name,
+		}
+	});
+}
+
+const setTeam = (player: Player, setPlayer: (player: Player) => void, name: string) => {
+	setPlayer({
+		...player,
+		nameplate: {
+			...player.nameplate,
+			team: name,
+		}
+	});
+}
+
+const setCountry = (player: Player, setPlayer: (player: Player) => void, name: string) => {
+	setPlayer({
+		...player,
+		country: {
+			...player.country,
+			name: country[name],
 		}
 	});
 }
@@ -100,14 +136,31 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 			}
 		});
 	}, [])
+	//send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1_team))
+	//local player1_country = obs.obs_data_get_string(settings, "player1_country")
+	//send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1_country))
+	//local player1_score = obs.obs_data_get_int(settings, "player1_score")
+	//send_json_to_browser("player1_score", string.format('{"":%d}', player1_score))
 
 	// NOTE: We can use this event to communicate from OBS script to control the web
-	window.addEventListener("myTestEvent", function() {
-		setScore(player1, setPlayer1, player1.score.value + 1);
-	})
+	//window.addEventListener("myTestEvent", function() {
+	//	setScore(player1, setPlayer1, player1.score.value + 1);
+	//})
 	window.addEventListener("player1_name", (payload: Event) => {
 		const d = payload as any as UpdateNameEvent;
 		setName(player1, setPlayer1, `${d.detail.name}`)
+	})
+	window.addEventListener("player1_team", (payload: Event) => {
+		const d = payload as any as UpdateTeamEvent;
+		setTeam(player1, setPlayer1, `${d.detail.name}`)
+	})
+	window.addEventListener("player1_country", (payload: Event) => {
+		const d = payload as any as UpdateCountryEvent;
+		setCountry(player1, setPlayer1, d.detail.name)
+	})
+	window.addEventListener("player1_score", (payload: Event) => {
+		const d = payload as any as UpdateScoreEvent;
+		setScore(player1, setPlayer1, d.detail.score)
 	})
 
 	return (

@@ -1,11 +1,16 @@
 obs = obslua
 
 function script_description()
-	return [[<center><h2>Frame The Fight</h2></center>
-           <p>Shake a source in the current scene when a hotkey is pressed. Go to <em>Settings
-           </em> then <em>Hotkeys</em> to select the key combination.</p><p>Check the <a href=
-           "https://github.com/obsproject/obs-studio/wiki/Scripting-Tutorial-Source-Shake.md">
-           Source Shake Scripting Tutorial</a> on the OBS Wiki for more information.</p>]]
+	return [[
+	   <center><h2>Frame The Fight</h2></center>
+           <p>
+	   This controls the overlay from the browser source. Go to <em>Settings
+           </em> then <em>Hotkeys</em> to select the key combination.
+	   </p>
+	   <p>
+		Buy me coffee <a href="https://google.com">here</a>
+           </p>
+	   ]]
 end
 
 function send_json_to_browser(eventName, payload)
@@ -44,19 +49,77 @@ function script_save()
 	obs.obs_data_array_release(hotkey_save_array)
 end
 
+function script_defaults(settings)
+	local default_team = "TEAM"
+	local default_country = "ID"
+
+	local player1_default_name = "Player 1"
+	obs.obs_data_set_default_string(settings, "player1_name", player1_default_name)
+	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1_default_name))
+	obs.obs_data_set_default_string(settings, "player1_team", default_team)
+	send_json_to_browser("player1_team", string.format('{"name":"%s"}', default_team))
+	obs.obs_data_set_default_string(settings, "player1_country", default_country)
+	send_json_to_browser("player1_country", string.format('{"name":"%s"}', default_country))
+	obs.obs_data_set_default_int(settings, "player1_score", 0)
+	send_json_to_browser("player1_score", string.format('{"score":%d}', 0))
+
+	local player2_default_name = "Player 2"
+	obs.obs_data_set_default_string(settings, "player2_name", player2_default_name)
+	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player2_default_name))
+	obs.obs_data_set_default_string(settings, "player2_team", "TEAM")
+	send_json_to_browser("player2_team", string.format('{"name":"%s"}', default_team))
+	obs.obs_data_set_default_string(settings, "player2_country", "GB")
+	send_json_to_browser("player2_country", string.format('{"name":"%s"}', default_country))
+	obs.obs_data_set_default_int(settings, "player2_score", 0)
+	send_json_to_browser("player2_score", string.format('{"score":%d}', 0))
+end
+
 function script_properties()
 	props = obs.obs_properties_create()
 
 	local player1_group = obs.obs_properties_create()
 	obs.obs_properties_add_text(player1_group, "player1_name", "Player Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player1_group, "player1_team", "Team Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player1_group, "player1_country", "Country", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_int(player1_group, "player1_score", "Score", 0, 99, 1)
 
-	obs.obs_properties_add_group(props, "player1_group", "Player 1", obs.OBS_GROUP_NORMAL, player1_group)
+	obs.obs_properties_add_group(props, "player1_group", "Player 1 (Left)", obs.OBS_GROUP_NORMAL, player1_group)
+
+	local player2_group = obs.obs_properties_create()
+	obs.obs_properties_add_text(player2_group, "player2_name", "Player Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player2_group, "player2_team", "Team Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player2_group, "player2_country", "Country", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_int(player2_group, "player2_score", "Score", 0, 99, 1)
+
+	obs.obs_properties_add_group(props, "player1_group", "Player 1 (Left)", obs.OBS_GROUP_NORMAL, player1_group)
+	obs.obs_properties_add_group(props, "player2_group", "Player 2 (Right)", obs.OBS_GROUP_NORMAL, player2_group)
+
 	-- obs.obs_properties_add_float_slider(props, "frequency", "Shake frequency", 0.1, 20, 0.1)
 	-- obs.obs_properties_add_int_slider(props, "amplitude", "Shake amplitude", 0, 90, 1)
 	return props
 end
 
+player1 = {}
+
 function script_update(settings)
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")
-	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1_name))
+	if player1["name"] ~= player1_name then
+		player1["name"] = player1_name
+		send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
+	end
+	local player1_team = obs.obs_data_get_string(settings, "player1_team")
+	if player1["team"] ~= player1_team then
+		player1["team"] = player1_team
+		send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1_team))
+	end
+	local player1_country = obs.obs_data_get_string(settings, "player1_country")
+	if player1["country"] ~= player1_country then
+		player1["country"] = player1_country
+		send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1_country))
+	end
+	local player1_score = obs.obs_data_get_int(settings, "player1_score")
+	if player1["score"] ~= player1_score then
+		player1["score"] = player1_score
+		send_json_to_browser("player1_score", string.format('{"score":%d}', player1_score))
+	end
 end

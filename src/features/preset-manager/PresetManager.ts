@@ -129,6 +129,7 @@ const preset: Preset = {
 			},
 			visible: true,
 		},
+		setPlayer1HealthPosPosition: () => { },
 	},
 	streetFighter6: {
 		player1: {
@@ -220,6 +221,7 @@ const preset: Preset = {
 			},
 			visible: true,
 		},
+		setPlayer1HealthPosPosition: () => { },
 	}
 }
 
