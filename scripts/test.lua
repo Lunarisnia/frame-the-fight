@@ -65,7 +65,7 @@ function script_defaults(settings)
 
 	local player2_default_name = "Player 2"
 	obs.obs_data_set_default_string(settings, "player2_name", player2_default_name)
-	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player2_default_name))
+	send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2_default_name))
 	obs.obs_data_set_default_string(settings, "player2_team", "TEAM")
 	send_json_to_browser("player2_team", string.format('{"name":"%s"}', default_team))
 	obs.obs_data_set_default_string(settings, "player2_country", "GB")
@@ -100,6 +100,7 @@ function script_properties()
 end
 
 player1 = {}
+player2 = {}
 
 function script_update(settings)
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")
@@ -121,5 +122,28 @@ function script_update(settings)
 	if player1["score"] ~= player1_score then
 		player1["score"] = player1_score
 		send_json_to_browser("player1_score", string.format('{"score":%d}', player1_score))
+	end
+
+	-- ================ PLAYER 2 ====================
+
+	local player2_name = obs.obs_data_get_string(settings, "player2_name")
+	if player2["name"] ~= player2_name then
+		player2["name"] = player2_name
+		send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2["name"]))
+	end
+	local player2_team = obs.obs_data_get_string(settings, "player2_team")
+	if player2["team"] ~= player2_team then
+		player2["team"] = player2_team
+		send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2_team))
+	end
+	local player2_country = obs.obs_data_get_string(settings, "player2_country")
+	if player2["country"] ~= player2_country then
+		player2["country"] = player2_country
+		send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2_country))
+	end
+	local player2_score = obs.obs_data_get_int(settings, "player2_score")
+	if player2["score"] ~= player2_score then
+		player2["score"] = player2_score
+		send_json_to_browser("player2_score", string.format('{"score":%d}', player2_score))
 	end
 end

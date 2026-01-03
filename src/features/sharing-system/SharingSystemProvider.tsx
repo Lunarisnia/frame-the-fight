@@ -163,6 +163,23 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		setScore(player1, setPlayer1, d.detail.score)
 	})
 
+	window.addEventListener("player2_name", (payload: Event) => {
+		const d = payload as any as UpdateNameEvent;
+		setName(player2, setPlayer2, `${d.detail.name}`)
+	})
+	window.addEventListener("player2_team", (payload: Event) => {
+		const d = payload as any as UpdateTeamEvent;
+		setTeam(player2, setPlayer2, `${d.detail.name}`)
+	})
+	window.addEventListener("player2_country", (payload: Event) => {
+		const d = payload as any as UpdateCountryEvent;
+		setCountry(player2, setPlayer2, d.detail.name)
+	})
+	window.addEventListener("player2_score", (payload: Event) => {
+		const d = payload as any as UpdateScoreEvent;
+		setScore(player2, setPlayer2, d.detail.score)
+	})
+
 	return (
 		<SharingSystemContext.Provider value={{ player1, player2, stage, font, logo, setPlayer1HealthPosPosition: setPlayer1HealthPos }}>
 			{children}
