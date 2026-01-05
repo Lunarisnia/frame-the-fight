@@ -34,7 +34,13 @@ export interface Player {
 
 export interface SharingSystemContextType {
 	player1: Player
-	setPlayer1HealthPosPosition: (x: number, y: number) => void
+	setPlayer1HealthPosition: (x: number, y: number) => void
+	setPlayer1ScorePosition: (x: number, y: number) => void
+	setPlayer1ScoreTextPosition: (x: number, y: number) => void
+	setPlayer1NamePosition: (x: number, y: number) => void
+	setPlayer1TeamPosition: (x: number, y: number) => void
+	setPlayer1CountryPosition: (x: number, y: number) => void
+	setPlayer1CountryIconPosition: (x: number, y: number) => void
 	player2: Player
 	stage: {
 		position: Position
@@ -85,7 +91,19 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			visible: true,
 		},
 	},
-	setPlayer1HealthPosPosition: () => {
+	setPlayer1HealthPosition: () => {
+
+	},
+	setPlayer1TeamPosition: () => {
+
+	},
+	setPlayer1ScorePosition: () => {
+
+	},
+	setPlayer1CountryPosition: () => {
+
+	},
+	setPlayer1NamePosition: () => {
 
 	},
 	player2: {

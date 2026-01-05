@@ -72,6 +72,13 @@ function script_defaults(settings)
 	send_json_to_browser("player2_country", string.format('{"name":"%s"}', default_country))
 	obs.obs_data_set_default_int(settings, "player2_score", 0)
 	send_json_to_browser("player2_score", string.format('{"score":%d}', 0))
+
+	obs.obs_data_set_default_string(settings, "group_stage", "Group A")
+	send_json_to_browser("group_stage", string.format('{"name":"%s"}', "Group A"))
+end
+
+function on_reset_layout()
+	send_json_to_browser("reset_position", "{}")
 end
 
 function script_properties()
@@ -91,8 +98,10 @@ function script_properties()
 	obs.obs_properties_add_text(player2_group, "player2_country", "Country", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_int(player2_group, "player2_score", "Score", 0, 99, 1)
 
-	obs.obs_properties_add_group(props, "player1_group", "Player 1 (Left)", obs.OBS_GROUP_NORMAL, player1_group)
 	obs.obs_properties_add_group(props, "player2_group", "Player 2 (Right)", obs.OBS_GROUP_NORMAL, player2_group)
+
+	obs.obs_properties_add_text(props, "group_stage", "Group Stage", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_button(props, "reset_position", "Reset Layout", on_reset_layout)
 
 	-- obs.obs_properties_add_float_slider(props, "frequency", "Shake frequency", 0.1, 20, 0.1)
 	-- obs.obs_properties_add_int_slider(props, "amplitude", "Shake amplitude", 0, 90, 1)
@@ -101,6 +110,7 @@ end
 
 player1 = {}
 player2 = {}
+stage = ""
 
 function script_update(settings)
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")
@@ -145,5 +155,12 @@ function script_update(settings)
 	if player2["score"] ~= player2_score then
 		player2["score"] = player2_score
 		send_json_to_browser("player2_score", string.format('{"score":%d}', player2_score))
+	end
+
+	-- =============== STAGE ================
+	local group_stage = obs.obs_data_get_string(settings, "group_stage")
+	if stage ~= group_stage then
+		stage = group_stage
+		send_json_to_browser("group_stage", string.format('{"name":"%s"}', group_stage))
 	end
 end
