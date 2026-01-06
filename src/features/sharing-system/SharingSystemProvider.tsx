@@ -29,6 +29,11 @@ interface UpdateGroupStageEvent {
 		name: string
 	}
 }
+interface VisibilityToggleEvent {
+	detail: {
+		value: boolean
+	}
+}
 
 const newPlayerConfig = () => {
 	return {
@@ -377,6 +382,83 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	window.addEventListener("reset_position", () => {
 		localStorage.clear();
 		window.location.reload();
+	})
+
+	window.addEventListener("player1_name_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setPlayer1({
+			...player1,
+			nameplate: {
+				...player1.nameplate,
+				visible: d.detail.value
+			}
+		})
+	})
+	window.addEventListener("player1_score_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setPlayer1({
+			...player1,
+			score: {
+				...player1.score,
+				visible: d.detail.value
+			}
+		})
+	})
+	window.addEventListener("player1_country_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setPlayer1({
+			...player1,
+			country: {
+				...player1.country,
+				visible: d.detail.value
+			}
+		})
+	})
+
+	window.addEventListener("player2_name_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setPlayer2({
+			...player2,
+			nameplate: {
+				...player2.nameplate,
+				visible: d.detail.value
+			}
+		})
+	})
+	window.addEventListener("player2_score_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setPlayer2({
+			...player2,
+			score: {
+				...player2.score,
+				visible: d.detail.value
+			}
+		})
+	})
+	window.addEventListener("player2_country_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setPlayer2({
+			...player2,
+			country: {
+				...player2.country,
+				visible: d.detail.value
+			}
+		})
+	})
+
+	window.addEventListener("group_stage_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setStage({
+			...stage,
+			visible: d.detail.value,
+		})
+	})
+	window.addEventListener("tournament_logo_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		setLogo({
+			...logo,
+			visible: d.detail.value,
+		})
 	})
 
 	return (

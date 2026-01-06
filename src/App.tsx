@@ -32,7 +32,7 @@ function App() {
         <Frame src="group.png" inverse={false} />
       </Draggable>
 
-      <Draggable x={ctx.logo.position.x} y={ctx.logo.position.y} setPosition={ctx.setLogoPosition}>
+      <Draggable x={ctx.logo.position.x} y={ctx.logo.position.y} setPosition={ctx.setLogoPosition} visible={ctx.logo.visible}>
         <Frame src="logo.png" inverse={false} width={ctx.logo.size.w} height={ctx.logo.size.h} />
       </Draggable>
 
