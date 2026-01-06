@@ -16,7 +16,6 @@ end
 function send_json_to_browser(eventName, payload)
 	local browser = obs.obs_get_source_by_name("Browser")
 	if browser then
-		print(obs.obs_source_get_id(browser))
 		local cd = obs.calldata_create()
 		obs.calldata_set_string(cd, "eventName", eventName)
 		obs.calldata_set_string(cd, "jsonString", payload)
@@ -24,7 +23,6 @@ function send_json_to_browser(eventName, payload)
 
 		obs.calldata_destroy(cd)
 		obs.obs_source_release(browser)
-		print("EVENT SENT")
 	end
 end
 
@@ -35,15 +33,14 @@ end
 
 hotkey_id = obs.OBS_INVALID_HOTKEY_ID
 
-function script_load()
+function script_load(settings)
 	hotkey_id = obs.obs_hotkey_register_frontend(script_path(), "Send Event", on_send_message)
 	local hotkey_save_array = obs.obs_data_get_array(settings, "send_event")
 	obs.obs_hotkey_load(hotkey_id, hotkey_save_array)
 	obs.obs_data_array_release(hotkey_save_array)
-	send_json_to_browser("myTestEvent", "{}")
 end
 
-function script_save()
+function script_save(settings)
 	local hotkey_save_array = obs.obs_hotkey_save(hotkey_id)
 	obs.obs_data_set_array(settings, "send_event", hotkey_save_array)
 	obs.obs_data_array_release(hotkey_save_array)
@@ -100,10 +97,40 @@ function on_reset_layout()
 	send_json_to_browser("reset_position", "{}")
 end
 
+function on_swap_players()
+	local temp_player = player1
+	player1 = player2
+	player2 = temp_player
+	print("HELLo")
+	print(player1["name"])
+	print(player2["name"])
+
+	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
+	send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1["team"]))
+	send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1["country"]))
+	send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
+
+	send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2["name"]))
+	send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2["team"]))
+	send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2["country"]))
+	send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
+end
+
+function on_reset_scores(props, prop, settings)
+	send_json_to_browser("player1_score", string.format('{"score":%d}', 0))
+	send_json_to_browser("player2_score", string.format('{"score":%d}', 0))
+	player1["score"] = 0
+	player2["score"] = 0
+	obs.obs_data_set_int(settings, "player1_score", 999)
+end
+
 function script_properties()
 	props = obs.obs_properties_create()
 
 	local player1_group = obs.obs_properties_create()
+	obs.obs_properties_add_button(props, "swap_players", "Swap Players", on_swap_players)
+	obs.obs_properties_add_button(props, "reset_scores", "Reset Scores", on_reset_scores)
+
 	obs.obs_properties_add_text(player1_group, "player1_name", "Player Name", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(player1_group, "player1_team", "Team Name", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(player1_group, "player1_country", "Country", obs.OBS_TEXT_DEFAULT)
