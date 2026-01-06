@@ -129,7 +129,57 @@ const preset: Preset = {
 			},
 			visible: true,
 		},
-		setPlayer1HealthPosPosition: () => { },
+		setPlayer2TeamPosition() {
+
+		},
+		setPlayer2ScorePosition() {
+
+		},
+		setPlayer2HealthPosition() {
+
+		},
+		setPlayer2CountryPosition() {
+
+		},
+		setPlayer1CountryIconPosition() {
+
+		},
+		setPlayer1ScoreTextPosition() {
+
+		},
+		setPlayer2NamePosition() {
+
+		},
+		setPlayer2CountryIconPosition() {
+
+		},
+		setPlayer2ScoreTextPosition() {
+
+		},
+		setStagePosition() {
+
+		},
+		setStageNamePosition() {
+
+		},
+		setLogoPosition() {
+
+		},
+		setPlayer1TeamPosition() {
+
+		},
+		setPlayer1CountryPosition() {
+
+		},
+		setPlayer1ScorePosition() {
+
+		},
+		setPlayer1HealthPosition() {
+
+		},
+		setPlayer1NamePosition() {
+
+		},
 	},
 	streetFighter6: {
 		player1: {
@@ -221,7 +271,57 @@ const preset: Preset = {
 			},
 			visible: true,
 		},
-		setPlayer1HealthPosPosition: () => { },
+		setPlayer2TeamPosition() {
+
+		},
+		setPlayer2ScorePosition() {
+
+		},
+		setPlayer2HealthPosition() {
+
+		},
+		setPlayer2CountryPosition() {
+
+		},
+		setPlayer1CountryIconPosition() {
+
+		},
+		setPlayer1ScoreTextPosition() {
+
+		},
+		setPlayer2NamePosition() {
+
+		},
+		setPlayer2CountryIconPosition() {
+
+		},
+		setPlayer2ScoreTextPosition() {
+
+		},
+		setStagePosition() {
+
+		},
+		setStageNamePosition() {
+
+		},
+		setLogoPosition() {
+
+		},
+		setPlayer1TeamPosition() {
+
+		},
+		setPlayer1CountryPosition() {
+
+		},
+		setPlayer1ScorePosition() {
+
+		},
+		setPlayer1HealthPosition() {
+
+		},
+		setPlayer1NamePosition() {
+
+		},
 	}
 }
 

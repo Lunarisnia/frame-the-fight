@@ -221,7 +221,6 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		setTeamPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
-
 	const setPlayer1ScorePosition = (x: number, y: number) => {
 		setScorePosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
@@ -230,15 +229,71 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		setScoreTextPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
-
 	const setPlayer1CountryPosition = (x: number, y: number) => {
 		setCountryPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
-
 	const setPlayer1CountryIconPosition = (x: number, y: number) => {
 		setCountryIconPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
+	}
+
+	const setPlayer2HealthPosition = (x: number, y: number) => {
+		setHealthbarPosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+	const setPlayer2NamePosition = (x: number, y: number) => {
+		setNamePosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+	const setPlayer2TeamPosition = (x: number, y: number) => {
+		setTeamPosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+	const setPlayer2ScorePosition = (x: number, y: number) => {
+		setScorePosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+	const setPlayer2ScoreTextPosition = (x: number, y: number) => {
+		setScoreTextPosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+	const setPlayer2CountryPosition = (x: number, y: number) => {
+		setCountryPosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+	const setPlayer2CountryIconPosition = (x: number, y: number) => {
+		setCountryIconPosition(player2, setPlayer2, x, y);
+		localStorage.setItem("player2", JSON.stringify(player2));
+	}
+
+	const setStagePosition = (x: number, y: number) => {
+		setStage({
+			...stage,
+			position: {
+				x,
+				y
+			}
+		})
+		localStorage.setItem("stage", JSON.stringify(stage));
+	}
+	const setStageNamePosition = (x: number, y: number) => {
+		setStage({
+			...stage,
+			textPosition: {
+				x, y
+			}
+		})
+		localStorage.setItem("stage", JSON.stringify(stage));
+	}
+	const setLogoPosition = (x: number, y: number) => {
+		setLogo({
+			...logo,
+			position: {
+				x, y
+			}
+		})
+		localStorage.setItem("logo", JSON.stringify(logo));
 	}
 
 	useEffect(() => {
@@ -250,18 +305,28 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	}, [])
 
 	useEffect(() => {
-		const savedPos = localStorage.getItem("player1")
-		if (savedPos != null) {
-			const saved = JSON.parse(savedPos);
+		const p1 = localStorage.getItem("player1")
+		if (p1 != null) {
+			const saved = JSON.parse(p1);
 			setPlayer1(saved);
+		}
+		const p2 = localStorage.getItem("player2")
+		if (p2 != null) {
+			const saved = JSON.parse(p2);
+			setPlayer2(saved);
+		}
+		const s = localStorage.getItem("stage")
+		if (s != null) {
+			const saved = JSON.parse(s);
+			setStage(saved);
+		}
+		const l = localStorage.getItem("logo")
+		if (l != null) {
+			const saved = JSON.parse(l);
+			setLogo(saved);
 		}
 	}, []);
 
-	//send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1_team))
-	//local player1_country = obs.obs_data_get_string(settings, "player1_country")
-	//send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1_country))
-	//local player1_score = obs.obs_data_get_int(settings, "player1_score")
-	//send_json_to_browser("player1_score", string.format('{"":%d}', player1_score))
 
 	// NOTE: We can use this event to communicate from OBS script to control the web
 	//window.addEventListener("myTestEvent", function() {
@@ -321,6 +386,13 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 			setPlayer1NamePosition, setPlayer1TeamPosition,
 			setPlayer1CountryPosition, setPlayer1CountryIconPosition,
 			setPlayer1ScoreTextPosition,
+			setPlayer2HealthPosition, setPlayer2ScorePosition,
+			setPlayer2NamePosition, setPlayer2TeamPosition,
+			setPlayer2CountryPosition, setPlayer2CountryIconPosition,
+			setPlayer2ScoreTextPosition,
+			setStagePosition,
+			setStageNamePosition,
+			setLogoPosition,
 		}}>
 			{children}
 		</SharingSystemContext.Provider>

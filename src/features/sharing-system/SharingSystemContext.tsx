@@ -41,6 +41,18 @@ export interface SharingSystemContextType {
 	setPlayer1TeamPosition: (x: number, y: number) => void
 	setPlayer1CountryPosition: (x: number, y: number) => void
 	setPlayer1CountryIconPosition: (x: number, y: number) => void
+
+	setPlayer2HealthPosition: (x: number, y: number) => void
+	setPlayer2ScorePosition: (x: number, y: number) => void
+	setPlayer2ScoreTextPosition: (x: number, y: number) => void
+	setPlayer2NamePosition: (x: number, y: number) => void
+	setPlayer2TeamPosition: (x: number, y: number) => void
+	setPlayer2CountryPosition: (x: number, y: number) => void
+	setPlayer2CountryIconPosition: (x: number, y: number) => void
+
+	setStagePosition: (x: number, y: number) => void
+	setStageNamePosition: (x: number, y: number) => void
+	setLogoPosition: (x: number, y: number) => void
 	player2: Player
 	stage: {
 		position: Position
@@ -90,6 +102,42 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			fontSize: 14,
 			visible: true,
 		},
+	},
+	setLogoPosition() {
+
+	},
+	setStageNamePosition() {
+
+	},
+	setStagePosition() {
+
+	},
+	setPlayer2ScoreTextPosition() {
+
+	},
+	setPlayer2CountryIconPosition() {
+
+	},
+	setPlayer2NamePosition() {
+
+	},
+	setPlayer1ScoreTextPosition() {
+
+	},
+	setPlayer1CountryIconPosition() {
+
+	},
+	setPlayer2CountryPosition() {
+
+	},
+	setPlayer2HealthPosition() {
+
+	},
+	setPlayer2ScorePosition() {
+
+	},
+	setPlayer2TeamPosition() {
+
 	},
 	setPlayer1HealthPosition: () => {
 
