@@ -134,8 +134,18 @@ const playerReducer = (state: Player, action: ReducerAction) => {
 	}
 }
 
-const stateReducer = (_: Stage, action: ReducerAction) => {
+const stateReducer = (state: Stage, action: ReducerAction) => {
 	switch (action.type) {
+		case "plate_position":
+			return {
+				...state,
+				position: action.value
+			} as Stage;
+		case "name_position":
+			return {
+				...state,
+				textPosition: action.value
+			} as Stage;
 		default:
 			return {
 				...action.value
@@ -143,12 +153,17 @@ const stateReducer = (_: Stage, action: ReducerAction) => {
 	}
 }
 
-const logoReducer = (_: Logo, action: ReducerAction) => {
+const logoReducer = (state: Logo, action: ReducerAction) => {
 	switch (action.type) {
+		case "position":
+			return {
+				...state,
+				position: action.value,
+			} as Logo;
 		default:
 			return {
 				...action.value
-			};
+			} as Logo;
 	}
 }
 
@@ -227,31 +242,15 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	}
 
 	const setStagePosition = (x: number, y: number) => {
-		//setStage({
-		//	...stage,
-		//	position: {
-		//		x,
-		//		y
-		//	}
-		//})
+		dispatchStage({ type: "plate_position", value: { x, y } });
 		localStorage.setItem("stage", JSON.stringify(stage));
 	}
 	const setStageNamePosition = (x: number, y: number) => {
-		//setStage({
-		//	...stage,
-		//	textPosition: {
-		//		x, y
-		//	}
-		//})
+		dispatchStage({ type: "name_position", value: { x, y } });
 		localStorage.setItem("stage", JSON.stringify(stage));
 	}
 	const setLogoPosition = (x: number, y: number) => {
-		//setLogo({
-		//	...logo,
-		//	position: {
-		//		x, y
-		//	}
-		//})
+		dispatchLogo({ type: "position", value: { x, y } });
 		localStorage.setItem("logo", JSON.stringify(logo));
 	}
 
@@ -274,16 +273,16 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 			const saved = JSON.parse(p2);
 			dispatchPlayer2({ type: "update_all", value: saved });
 		}
-		//const s = localStorage.getItem("stage")
-		//if (s != null) {
-		//	const saved = JSON.parse(s);
-		//	setStage(saved);
-		//}
-		//const l = localStorage.getItem("logo")
-		//if (l != null) {
-		//	const saved = JSON.parse(l);
-		//	setLogo(saved);
-		//}
+		const s = localStorage.getItem("stage")
+		if (s != null) {
+			const saved = JSON.parse(s);
+			dispatchStage({ type: "update_all", value: saved });
+		}
+		const l = localStorage.getItem("logo")
+		if (l != null) {
+			const saved = JSON.parse(l);
+			dispatchLogo({ type: "update_all", value: saved });
+		}
 	}, []);
 
 
