@@ -1,5 +1,5 @@
-import { useEffect, useState, type FC, type ReactNode } from 'react';
-import { SharingSystemContext, type Player } from './SharingSystemContext';
+import { useEffect, useReducer, useState, type FC, type ReactNode } from 'react';
+import { SharingSystemContext, type Logo, type Player, type Stage } from './SharingSystemContext';
 import { getPreset, type Game } from '../preset-manager/PresetManager';
 import WebFont from 'webfontloader';
 import { country } from '../../constants/country';
@@ -64,240 +64,139 @@ const newPlayerConfig = () => {
 	};
 }
 
-const setName = (player: Player, setPlayer: (player: Player) => void, name: string) => {
-	setPlayer({
-		...player,
-		nameplate: {
-			...player.nameplate,
-			name: name,
-		}
-	});
+interface ReducerAction {
+	type: string
+	value: any
 }
 
-const setTeam = (player: Player, setPlayer: (player: Player) => void, name: string) => {
-	setPlayer({
-		...player,
-		nameplate: {
-			...player.nameplate,
-			team: name,
-		}
-	});
+const playerReducer = (_: Player, action: ReducerAction) => {
+	switch (action.type) {
+		default:
+			return {
+				...action.value
+			};
+	}
 }
 
-const setCountry = (player: Player, setPlayer: (player: Player) => void, name: string) => {
-	setPlayer({
-		...player,
-		country: {
-			...player.country,
-			name: country[name],
-		}
-	});
+
+const stateReducer = (_: Stage, action: ReducerAction) => {
+	switch (action.type) {
+		default:
+			return {
+				...action.value
+			};
+	}
 }
 
-const setScore = (player: Player, setPlayer: (player: Player) => void, score: number) => {
-	setPlayer({
-		...player,
-		score: {
-			...player.score,
-			value: score,
-		}
-	});
-}
-
-const setHealthbarPosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		nameplate: {
-			...player.nameplate,
-			position: {
-				x: x,
-				y: y,
-			}
-		}
-	})
-
-}
-const setScorePosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		score: {
-			...player.score,
-			position: {
-				x: x,
-				y: y,
-			}
-		}
-	})
-
-}
-const setScoreTextPosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		score: {
-			...player.score,
-			textPosition: {
-				x: x,
-				y: y,
-			}
-		}
-	})
-
-}
-const setCountryPosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		country: {
-			...player.country,
-			position: {
-				x: x,
-				y: y,
-			}
-		}
-	})
-
-}
-
-const setCountryIconPosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		country: {
-			...player.country,
-			textPosition: {
-				x: x,
-				y: y,
-			}
-		}
-	})
-
-}
-const setNamePosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		nameplate: {
-			...player.nameplate,
-			textPosition: {
-				x,
-				y
-			}
-		}
-	})
-
-}
-const setTeamPosition = (player: Player, setPlayer: (player: Player) => void, x: number, y: number) => {
-	setPlayer({
-		...player,
-		nameplate: {
-			...player.nameplate,
-			teamTextPosition: {
-				x,
-				y
-			}
-		}
-	})
-
+const logoReducer = (_: Logo, action: ReducerAction) => {
+	switch (action.type) {
+		default:
+			return {
+				...action.value
+			};
+	}
 }
 
 export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children }) => {
 	const [activePreset, ___] = useState<Game>("tekken8");
-	const [player1, setPlayer1] = useState(newPlayerConfig());
-	const [player2, setPlayer2] = useState(newPlayerConfig());
-	const [stage, setStage] = useState({ position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
-	const [logo, setLogo] = useState({ position: { x: 0, y: 0 }, size: { w: 180, h: 180 }, visible: true });
+	const [player1, dispatchPlayer1] = useReducer(playerReducer, newPlayerConfig());
+	const [player2, dispatchPlayer2] = useReducer(playerReducer, newPlayerConfig());
+	const [stage, dispatchStage] = useReducer(stateReducer, { position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
+	const [logo, dispatchLogo] = useReducer(logoReducer, { position: { x: 0, y: 0 }, size: { w: 180, h: 180 }, visible: true });
 	const [font, setFont] = useState("Roboto");
 	const p = getPreset(activePreset);
-
+	p.logo
 	useEffect(() => {
-		setPlayer1(p.player1);
-		setPlayer2(p.player2);
-		setStage(p.stage);
-		setLogo(p.logo);
+		dispatchPlayer1({ type: "update_all", value: p.player1 });
+		dispatchPlayer2({ type: "update_all", value: p.player2 });
+		dispatchStage({ type: "update_all", value: p.stage });
+		dispatchLogo({ type: "update_all", value: p.logo });
 		setFont(p.font);
 	}, [activePreset])
 
 	const setPlayer1HealthPosition = (x: number, y: number) => {
-		setHealthbarPosition(player1, setPlayer1, x, y);
+		//setHealthbarPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1NamePosition = (x: number, y: number) => {
-		setNamePosition(player1, setPlayer1, x, y);
+		//setNamePosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1TeamPosition = (x: number, y: number) => {
-		setTeamPosition(player1, setPlayer1, x, y);
+		//setTeamPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1ScorePosition = (x: number, y: number) => {
-		setScorePosition(player1, setPlayer1, x, y);
+		//setScorePosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1ScoreTextPosition = (x: number, y: number) => {
-		setScoreTextPosition(player1, setPlayer1, x, y);
+		//setScoreTextPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1CountryPosition = (x: number, y: number) => {
-		setCountryPosition(player1, setPlayer1, x, y);
+		//setCountryPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1CountryIconPosition = (x: number, y: number) => {
-		setCountryIconPosition(player1, setPlayer1, x, y);
+		//setCountryIconPosition(player1, setPlayer1, x, y);
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
-
 	const setPlayer2HealthPosition = (x: number, y: number) => {
-		setHealthbarPosition(player2, setPlayer2, x, y);
+		//setHealthbarPosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2NamePosition = (x: number, y: number) => {
-		setNamePosition(player2, setPlayer2, x, y);
+		//setNamePosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2TeamPosition = (x: number, y: number) => {
-		setTeamPosition(player2, setPlayer2, x, y);
+		//setTeamPosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2ScorePosition = (x: number, y: number) => {
-		setScorePosition(player2, setPlayer2, x, y);
+		//setScorePosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2ScoreTextPosition = (x: number, y: number) => {
-		setScoreTextPosition(player2, setPlayer2, x, y);
+		//setScoreTextPosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2CountryPosition = (x: number, y: number) => {
-		setCountryPosition(player2, setPlayer2, x, y);
+		//setCountryPosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2CountryIconPosition = (x: number, y: number) => {
-		setCountryIconPosition(player2, setPlayer2, x, y);
+		//setCountryIconPosition(player2, setPlayer2, x, y);
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 
 	const setStagePosition = (x: number, y: number) => {
-		setStage({
-			...stage,
-			position: {
-				x,
-				y
-			}
-		})
+		//setStage({
+		//	...stage,
+		//	position: {
+		//		x,
+		//		y
+		//	}
+		//})
 		localStorage.setItem("stage", JSON.stringify(stage));
 	}
 	const setStageNamePosition = (x: number, y: number) => {
-		setStage({
-			...stage,
-			textPosition: {
-				x, y
-			}
-		})
+		//setStage({
+		//	...stage,
+		//	textPosition: {
+		//		x, y
+		//	}
+		//})
 		localStorage.setItem("stage", JSON.stringify(stage));
 	}
 	const setLogoPosition = (x: number, y: number) => {
-		setLogo({
-			...logo,
-			position: {
-				x, y
-			}
-		})
+		//setLogo({
+		//	...logo,
+		//	position: {
+		//		x, y
+		//	}
+		//})
 		localStorage.setItem("logo", JSON.stringify(logo));
 	}
 
@@ -310,26 +209,26 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	}, [])
 
 	useEffect(() => {
-		const p1 = localStorage.getItem("player1")
-		if (p1 != null) {
-			const saved = JSON.parse(p1);
-			setPlayer1(saved);
-		}
-		const p2 = localStorage.getItem("player2")
-		if (p2 != null) {
-			const saved = JSON.parse(p2);
-			setPlayer2(saved);
-		}
-		const s = localStorage.getItem("stage")
-		if (s != null) {
-			const saved = JSON.parse(s);
-			setStage(saved);
-		}
-		const l = localStorage.getItem("logo")
-		if (l != null) {
-			const saved = JSON.parse(l);
-			setLogo(saved);
-		}
+		//const p1 = localStorage.getItem("player1")
+		//if (p1 != null) {
+		//	const saved = JSON.parse(p1);
+		//	setPlayer1(saved);
+		//}
+		//const p2 = localStorage.getItem("player2")
+		//if (p2 != null) {
+		//	const saved = JSON.parse(p2);
+		//	setPlayer2(saved);
+		//}
+		//const s = localStorage.getItem("stage")
+		//if (s != null) {
+		//	const saved = JSON.parse(s);
+		//	setStage(saved);
+		//}
+		//const l = localStorage.getItem("logo")
+		//if (l != null) {
+		//	const saved = JSON.parse(l);
+		//	setLogo(saved);
+		//}
 	}, []);
 
 
@@ -337,129 +236,129 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	//window.addEventListener("myTestEvent", function() {
 	//	setScore(player1, setPlayer1, player1.score.value + 1);
 	//})
-	window.addEventListener("player1_name", (payload: Event) => {
-		const d = payload as any as UpdateNameEvent;
-		setName(player1, setPlayer1, `${d.detail.name}`)
-	})
-	window.addEventListener("player1_team", (payload: Event) => {
-		const d = payload as any as UpdateTeamEvent;
-		setTeam(player1, setPlayer1, `${d.detail.name}`)
-	})
-	window.addEventListener("player1_country", (payload: Event) => {
-		const d = payload as any as UpdateCountryEvent;
-		setCountry(player1, setPlayer1, d.detail.name)
-	})
-	window.addEventListener("player1_score", (payload: Event) => {
-		const d = payload as any as UpdateScoreEvent;
-		setScore(player1, setPlayer1, d.detail.score)
-	})
-
-	window.addEventListener("player2_name", (payload: Event) => {
-		const d = payload as any as UpdateNameEvent;
-		setName(player2, setPlayer2, `${d.detail.name}`)
-	})
-	window.addEventListener("player2_team", (payload: Event) => {
-		const d = payload as any as UpdateTeamEvent;
-		setTeam(player2, setPlayer2, `${d.detail.name}`)
-	})
-	window.addEventListener("player2_country", (payload: Event) => {
-		const d = payload as any as UpdateCountryEvent;
-		setCountry(player2, setPlayer2, d.detail.name)
-	})
-	window.addEventListener("player2_score", (payload: Event) => {
-		const d = payload as any as UpdateScoreEvent;
-		setScore(player2, setPlayer2, d.detail.score)
-	})
-
-	window.addEventListener("group_stage", (payload: Event) => {
-		const d = payload as any as UpdateGroupStageEvent;
-		setStage({
-			...stage,
-			value: d.detail.name,
-		})
-	})
-
-	window.addEventListener("reset_position", () => {
-		localStorage.clear();
-		window.location.reload();
-	})
-
-	window.addEventListener("player1_name_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setPlayer1({
-			...player1,
-			nameplate: {
-				...player1.nameplate,
-				visible: d.detail.value
-			}
-		})
-	})
-	window.addEventListener("player1_score_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setPlayer1({
-			...player1,
-			score: {
-				...player1.score,
-				visible: d.detail.value
-			}
-		})
-	})
-	window.addEventListener("player1_country_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setPlayer1({
-			...player1,
-			country: {
-				...player1.country,
-				visible: d.detail.value
-			}
-		})
-	})
-
-	window.addEventListener("player2_name_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setPlayer2({
-			...player2,
-			nameplate: {
-				...player2.nameplate,
-				visible: d.detail.value
-			}
-		})
-	})
-	window.addEventListener("player2_score_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setPlayer2({
-			...player2,
-			score: {
-				...player2.score,
-				visible: d.detail.value
-			}
-		})
-	})
-	window.addEventListener("player2_country_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setPlayer2({
-			...player2,
-			country: {
-				...player2.country,
-				visible: d.detail.value
-			}
-		})
-	})
-
-	window.addEventListener("group_stage_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setStage({
-			...stage,
-			visible: d.detail.value,
-		})
-	})
-	window.addEventListener("tournament_logo_plate", (payload: Event) => {
-		const d = payload as any as VisibilityToggleEvent;
-		setLogo({
-			...logo,
-			visible: d.detail.value,
-		})
-	})
+	//window.addEventListener("player1_name", (payload: Event) => {
+	//	const d = payload as any as UpdateNameEvent;
+	//	setName(player1, setPlayer1, `${d.detail.name}`)
+	//})
+	//window.addEventListener("player1_team", (payload: Event) => {
+	//	const d = payload as any as UpdateTeamEvent;
+	//	setTeam(player1, setPlayer1, `${d.detail.name}`)
+	//})
+	//window.addEventListener("player1_country", (payload: Event) => {
+	//	const d = payload as any as UpdateCountryEvent;
+	//	setCountry(player1, setPlayer1, d.detail.name)
+	//})
+	//window.addEventListener("player1_score", (payload: Event) => {
+	//	const d = payload as any as UpdateScoreEvent;
+	//	setScore(player1, setPlayer1, d.detail.score)
+	//})
+	//
+	//window.addEventListener("player2_name", (payload: Event) => {
+	//	const d = payload as any as UpdateNameEvent;
+	//	setName(player2, setPlayer2, `${d.detail.name}`)
+	//})
+	//window.addEventListener("player2_team", (payload: Event) => {
+	//	const d = payload as any as UpdateTeamEvent;
+	//	setTeam(player2, setPlayer2, `${d.detail.name}`)
+	//})
+	//window.addEventListener("player2_country", (payload: Event) => {
+	//	const d = payload as any as UpdateCountryEvent;
+	//	setCountry(player2, setPlayer2, d.detail.name)
+	//})
+	//window.addEventListener("player2_score", (payload: Event) => {
+	//	const d = payload as any as UpdateScoreEvent;
+	//	setScore(player2, setPlayer2, d.detail.score)
+	//})
+	//
+	//window.addEventListener("group_stage", (payload: Event) => {
+	//	const d = payload as any as UpdateGroupStageEvent;
+	//	setStage({
+	//		...stage,
+	//		value: d.detail.name,
+	//	})
+	//})
+	//
+	//window.addEventListener("reset_position", () => {
+	//	localStorage.clear();
+	//	window.location.reload();
+	//})
+	//
+	//window.addEventListener("player1_name_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setPlayer1({
+	//		...player1,
+	//		nameplate: {
+	//			...player1.nameplate,
+	//			visible: d.detail.value
+	//		}
+	//	})
+	//})
+	//window.addEventListener("player1_score_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setPlayer1({
+	//		...player1,
+	//		score: {
+	//			...player1.score,
+	//			visible: d.detail.value
+	//		}
+	//	})
+	//})
+	//window.addEventListener("player1_country_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setPlayer1({
+	//		...player1,
+	//		country: {
+	//			...player1.country,
+	//			visible: d.detail.value
+	//		}
+	//	})
+	//})
+	//
+	//window.addEventListener("player2_name_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setPlayer2({
+	//		...player2,
+	//		nameplate: {
+	//			...player2.nameplate,
+	//			visible: d.detail.value
+	//		}
+	//	})
+	//})
+	//window.addEventListener("player2_score_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setPlayer2({
+	//		...player2,
+	//		score: {
+	//			...player2.score,
+	//			visible: d.detail.value
+	//		}
+	//	})
+	//})
+	//window.addEventListener("player2_country_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setPlayer2({
+	//		...player2,
+	//		country: {
+	//			...player2.country,
+	//			visible: d.detail.value
+	//		}
+	//	})
+	//})
+	//
+	//window.addEventListener("group_stage_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setStage({
+	//		...stage,
+	//		visible: d.detail.value,
+	//	})
+	//})
+	//window.addEventListener("tournament_logo_plate", (payload: Event) => {
+	//	const d = payload as any as VisibilityToggleEvent;
+	//	setLogo({
+	//		...logo,
+	//		visible: d.detail.value,
+	//	})
+	//})
 
 	return (
 		<SharingSystemContext.Provider value={{

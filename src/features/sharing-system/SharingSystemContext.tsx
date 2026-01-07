@@ -5,6 +5,23 @@ interface Position {
 	y: number
 }
 
+export interface Stage {
+	position: Position
+	textPosition: Position
+	fontSize: number
+	value: string
+	visible: boolean
+}
+
+export interface Logo {
+	position: Position
+	visible: boolean
+	size: {
+		w: number
+		h: number
+	}
+}
+
 export interface Player {
 	nameplate: {
 		position: Position
@@ -54,21 +71,8 @@ export interface SharingSystemContextType {
 	setStageNamePosition: (x: number, y: number) => void
 	setLogoPosition: (x: number, y: number) => void
 	player2: Player
-	stage: {
-		position: Position
-		textPosition: Position
-		value: string
-		fontSize: number
-		visible: boolean
-	}
-	logo: {
-		position: Position
-		visible: boolean
-		size: {
-			w: number
-			h: number
-		},
-	}
+	stage: Stage
+	logo: Logo
 	font: string
 }
 
