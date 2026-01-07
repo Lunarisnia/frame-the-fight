@@ -71,6 +71,30 @@ interface ReducerAction {
 
 const playerReducer = (state: Player, action: ReducerAction) => {
 	switch (action.type) {
+		case "name_plate_visibility":
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					visible: action.value,
+				}
+			} as Player;
+		case "score_plate_visibility":
+			return {
+				...state,
+				score: {
+					...state.score,
+					visible: action.value,
+				}
+			} as Player;
+		case "country_plate_visibility":
+			return {
+				...state,
+				country: {
+					...state.country,
+					visible: action.value,
+				}
+			} as Player;
 		case "name_value":
 			return {
 				...state,
@@ -183,6 +207,11 @@ const stageReducer = (state: Stage, action: ReducerAction) => {
 				...state,
 				value: action.value,
 			} as Stage;
+		case "visibility":
+			return {
+				...state,
+				visible: action.value,
+			} as Stage;
 		default:
 			return {
 				...action.value
@@ -196,6 +225,11 @@ const logoReducer = (state: Logo, action: ReducerAction) => {
 			return {
 				...state,
 				position: action.value,
+			} as Logo;
+		case "visibility":
+			return {
+				...state,
+				visible: action.value,
 			} as Logo;
 		default:
 			return {
@@ -371,83 +405,40 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		window.location.reload();
 	})
 
-	//window.addEventListener("player1_name_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	dispatchPlayer1({ type: "visibility", })
-	//	setPlayer1({
-	//		...player1,
-	//		nameplate: {
-	//			...player1.nameplate,
-	//			visible: d.detail.value
-	//		}
-	//	})
-	//})
-	//window.addEventListener("player1_score_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setPlayer1({
-	//		...player1,
-	//		score: {
-	//			...player1.score,
-	//			visible: d.detail.value
-	//		}
-	//	})
-	//})
-	//window.addEventListener("player1_country_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setPlayer1({
-	//		...player1,
-	//		country: {
-	//			...player1.country,
-	//			visible: d.detail.value
-	//		}
-	//	})
-	//})
-	//
-	//window.addEventListener("player2_name_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setPlayer2({
-	//		...player2,
-	//		nameplate: {
-	//			...player2.nameplate,
-	//			visible: d.detail.value
-	//		}
-	//	})
-	//})
-	//window.addEventListener("player2_score_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setPlayer2({
-	//		...player2,
-	//		score: {
-	//			...player2.score,
-	//			visible: d.detail.value
-	//		}
-	//	})
-	//})
-	//window.addEventListener("player2_country_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setPlayer2({
-	//		...player2,
-	//		country: {
-	//			...player2.country,
-	//			visible: d.detail.value
-	//		}
-	//	})
-	//})
-	//
-	//window.addEventListener("group_stage_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setStage({
-	//		...stage,
-	//		visible: d.detail.value,
-	//	})
-	//})
-	//window.addEventListener("tournament_logo_plate", (payload: Event) => {
-	//	const d = payload as any as VisibilityToggleEvent;
-	//	setLogo({
-	//		...logo,
-	//		visible: d.detail.value,
-	//	})
-	//})
+	window.addEventListener("player1_name_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchPlayer1({ type: "name_plate_visibility", value: d.detail.value });
+	})
+	window.addEventListener("player1_score_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchPlayer1({ type: "score_plate_visibility", value: d.detail.value });
+	})
+	window.addEventListener("player1_country_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchPlayer1({ type: "country_plate_visibility", value: d.detail.value });
+	})
+
+	window.addEventListener("player2_name_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchPlayer2({ type: "name_plate_visibility", value: d.detail.value });
+	})
+	window.addEventListener("player2_score_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchPlayer2({ type: "score_plate_visibility", value: d.detail.value });
+	})
+	window.addEventListener("player2_country_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchPlayer2({ type: "country_plate_visibility", value: d.detail.value });
+	})
+
+	window.addEventListener("group_stage_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchStage({ type: "visibility", value: d.detail.value });
+	})
+	window.addEventListener("tournament_logo_plate", (payload: Event) => {
+		const d = payload as any as VisibilityToggleEvent;
+		dispatchLogo({ type: "visibility", value: d.detail.value });
+	})
 
 	return (
 		<SharingSystemContext.Provider value={{
