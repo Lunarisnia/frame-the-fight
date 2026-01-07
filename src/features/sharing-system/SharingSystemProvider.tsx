@@ -69,15 +69,70 @@ interface ReducerAction {
 	value: any
 }
 
-const playerReducer = (_: Player, action: ReducerAction) => {
+const playerReducer = (state: Player, action: ReducerAction) => {
 	switch (action.type) {
+		case "name_plate_position":
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					position: action.value,
+				}
+			} as Player;
+		case "score_plate_position":
+			return {
+				...state,
+				score: {
+					...state.score,
+					position: action.value,
+				}
+			} as Player;
+		case "country_plate_position":
+			return {
+				...state,
+				country: {
+					...state.country,
+					position: action.value,
+				}
+			} as Player;
+		case "name_text_position":
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					textPosition: action.value,
+				}
+			} as Player;
+		case "team_text_position":
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					teamTextPosition: action.value,
+				}
+			} as Player;
+		case "score_text_position":
+			return {
+				...state,
+				score: {
+					...state.score,
+					textPosition: action.value,
+				}
+			} as Player;
+		case "country_text_position":
+			return {
+				...state,
+				country: {
+					...state.country,
+					textPosition: action.value,
+				}
+			} as Player;
 		default:
 			return {
 				...action.value
 			};
 	}
 }
-
 
 const stateReducer = (_: Stage, action: ReducerAction) => {
 	switch (action.type) {
@@ -105,7 +160,7 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	const [logo, dispatchLogo] = useReducer(logoReducer, { position: { x: 0, y: 0 }, size: { w: 180, h: 180 }, visible: true });
 	const [font, setFont] = useState("Roboto");
 	const p = getPreset(activePreset);
-	p.logo
+
 	useEffect(() => {
 		dispatchPlayer1({ type: "update_all", value: p.player1 });
 		dispatchPlayer2({ type: "update_all", value: p.player2 });
@@ -115,59 +170,59 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	}, [activePreset])
 
 	const setPlayer1HealthPosition = (x: number, y: number) => {
-		//setHealthbarPosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "name_plate_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1NamePosition = (x: number, y: number) => {
-		//setNamePosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "name_text_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1TeamPosition = (x: number, y: number) => {
-		//setTeamPosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "team_text_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1ScorePosition = (x: number, y: number) => {
-		//setScorePosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "score_plate_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1ScoreTextPosition = (x: number, y: number) => {
-		//setScoreTextPosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "score_text_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1CountryPosition = (x: number, y: number) => {
-		//setCountryPosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "country_plate_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer1CountryIconPosition = (x: number, y: number) => {
-		//setCountryIconPosition(player1, setPlayer1, x, y);
+		dispatchPlayer1({ type: "country_text_position", value: { x, y } });
 		localStorage.setItem("player1", JSON.stringify(player1));
 	}
 	const setPlayer2HealthPosition = (x: number, y: number) => {
-		//setHealthbarPosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "name_plate_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2NamePosition = (x: number, y: number) => {
-		//setNamePosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "name_text_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2TeamPosition = (x: number, y: number) => {
-		//setTeamPosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "team_text_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2ScorePosition = (x: number, y: number) => {
-		//setScorePosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "score_plate_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2ScoreTextPosition = (x: number, y: number) => {
-		//setScoreTextPosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "score_text_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2CountryPosition = (x: number, y: number) => {
-		//setCountryPosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "country_plate_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 	const setPlayer2CountryIconPosition = (x: number, y: number) => {
-		//setCountryIconPosition(player2, setPlayer2, x, y);
+		dispatchPlayer2({ type: "country_text_position", value: { x, y } });
 		localStorage.setItem("player2", JSON.stringify(player2));
 	}
 
@@ -209,16 +264,16 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	}, [])
 
 	useEffect(() => {
-		//const p1 = localStorage.getItem("player1")
-		//if (p1 != null) {
-		//	const saved = JSON.parse(p1);
-		//	setPlayer1(saved);
-		//}
-		//const p2 = localStorage.getItem("player2")
-		//if (p2 != null) {
-		//	const saved = JSON.parse(p2);
-		//	setPlayer2(saved);
-		//}
+		const p1 = localStorage.getItem("player1")
+		if (p1 != null) {
+			const saved = JSON.parse(p1);
+			dispatchPlayer1({ type: "update_all", value: saved });
+		}
+		const p2 = localStorage.getItem("player2")
+		if (p2 != null) {
+			const saved = JSON.parse(p2);
+			dispatchPlayer2({ type: "update_all", value: saved });
+		}
 		//const s = localStorage.getItem("stage")
 		//if (s != null) {
 		//	const saved = JSON.parse(s);
