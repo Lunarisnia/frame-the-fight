@@ -105,15 +105,15 @@ function on_swap_players()
 	print(player1["name"])
 	print(player2["name"])
 
-	-- send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
-	-- send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1["team"]))
-	-- send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1["country"]))
-	-- send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
+	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
+	send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1["team"]))
+	send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1["country"]))
+	send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
 
 	send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2["name"]))
-	-- send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2["team"]))
-	-- send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2["country"]))
-	-- send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
+	send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2["team"]))
+	send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2["country"]))
+	send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
 end
 
 function on_reset_scores(props, prop, settings)

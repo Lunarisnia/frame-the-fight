@@ -71,6 +71,38 @@ interface ReducerAction {
 
 const playerReducer = (state: Player, action: ReducerAction) => {
 	switch (action.type) {
+		case "name_value":
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					name: action.value,
+				}
+			} as Player;
+		case "team_value":
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					team: action.value,
+				}
+			} as Player;
+		case "country_value":
+			return {
+				...state,
+				country: {
+					...state.country,
+					name: country[action.value],
+				}
+			} as Player;
+		case "score_value":
+			return {
+				...state,
+				score: {
+					...state.score,
+					value: action.value,
+				}
+			} as Player;
 		case "name_plate_position":
 			return {
 				...state,
@@ -134,7 +166,7 @@ const playerReducer = (state: Player, action: ReducerAction) => {
 	}
 }
 
-const stateReducer = (state: Stage, action: ReducerAction) => {
+const stageReducer = (state: Stage, action: ReducerAction) => {
 	switch (action.type) {
 		case "plate_position":
 			return {
@@ -145,6 +177,11 @@ const stateReducer = (state: Stage, action: ReducerAction) => {
 			return {
 				...state,
 				textPosition: action.value
+			} as Stage;
+		case "value":
+			return {
+				...state,
+				value: action.value,
 			} as Stage;
 		default:
 			return {
@@ -171,7 +208,7 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	const [activePreset, ___] = useState<Game>("tekken8");
 	const [player1, dispatchPlayer1] = useReducer(playerReducer, newPlayerConfig());
 	const [player2, dispatchPlayer2] = useReducer(playerReducer, newPlayerConfig());
-	const [stage, dispatchStage] = useReducer(stateReducer, { position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
+	const [stage, dispatchStage] = useReducer(stageReducer, { position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
 	const [logo, dispatchLogo] = useReducer(logoReducer, { position: { x: 0, y: 0 }, size: { w: 180, h: 180 }, visible: true });
 	const [font, setFont] = useState("Roboto");
 	const p = getPreset(activePreset);
@@ -290,55 +327,53 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	//window.addEventListener("myTestEvent", function() {
 	//	setScore(player1, setPlayer1, player1.score.value + 1);
 	//})
-	//window.addEventListener("player1_name", (payload: Event) => {
-	//	const d = payload as any as UpdateNameEvent;
-	//	setName(player1, setPlayer1, `${d.detail.name}`)
-	//})
-	//window.addEventListener("player1_team", (payload: Event) => {
-	//	const d = payload as any as UpdateTeamEvent;
-	//	setTeam(player1, setPlayer1, `${d.detail.name}`)
-	//})
-	//window.addEventListener("player1_country", (payload: Event) => {
-	//	const d = payload as any as UpdateCountryEvent;
-	//	setCountry(player1, setPlayer1, d.detail.name)
-	//})
-	//window.addEventListener("player1_score", (payload: Event) => {
-	//	const d = payload as any as UpdateScoreEvent;
-	//	setScore(player1, setPlayer1, d.detail.score)
-	//})
-	//
-	//window.addEventListener("player2_name", (payload: Event) => {
-	//	const d = payload as any as UpdateNameEvent;
-	//	setName(player2, setPlayer2, `${d.detail.name}`)
-	//})
-	//window.addEventListener("player2_team", (payload: Event) => {
-	//	const d = payload as any as UpdateTeamEvent;
-	//	setTeam(player2, setPlayer2, `${d.detail.name}`)
-	//})
-	//window.addEventListener("player2_country", (payload: Event) => {
-	//	const d = payload as any as UpdateCountryEvent;
-	//	setCountry(player2, setPlayer2, d.detail.name)
-	//})
-	//window.addEventListener("player2_score", (payload: Event) => {
-	//	const d = payload as any as UpdateScoreEvent;
-	//	setScore(player2, setPlayer2, d.detail.score)
-	//})
-	//
-	//window.addEventListener("group_stage", (payload: Event) => {
-	//	const d = payload as any as UpdateGroupStageEvent;
-	//	setStage({
-	//		...stage,
-	//		value: d.detail.name,
-	//	})
-	//})
-	//
-	//window.addEventListener("reset_position", () => {
-	//	localStorage.clear();
-	//	window.location.reload();
-	//})
-	//
+	window.addEventListener("player1_name", (payload: Event) => {
+		const d = payload as any as UpdateNameEvent;
+		dispatchPlayer1({ type: "name_value", value: d.detail.name });
+	})
+	window.addEventListener("player1_team", (payload: Event) => {
+		const d = payload as any as UpdateTeamEvent;
+		dispatchPlayer1({ type: "team_value", value: d.detail.name });
+	})
+	window.addEventListener("player1_country", (payload: Event) => {
+		const d = payload as any as UpdateCountryEvent;
+		dispatchPlayer1({ type: "country_value", value: d.detail.name });
+	})
+	window.addEventListener("player1_score", (payload: Event) => {
+		const d = payload as any as UpdateScoreEvent;
+		dispatchPlayer1({ type: "score_value", value: d.detail.score });
+	})
+
+	window.addEventListener("player2_name", (payload: Event) => {
+		const d = payload as any as UpdateNameEvent;
+		dispatchPlayer2({ type: "name_value", value: d.detail.name });
+	})
+	window.addEventListener("player2_team", (payload: Event) => {
+		const d = payload as any as UpdateTeamEvent;
+		dispatchPlayer2({ type: "team_value", value: d.detail.name });
+	})
+	window.addEventListener("player2_country", (payload: Event) => {
+		const d = payload as any as UpdateCountryEvent;
+		dispatchPlayer2({ type: "country_value", value: d.detail.name });
+	})
+	window.addEventListener("player2_score", (payload: Event) => {
+		const d = payload as any as UpdateScoreEvent;
+		dispatchPlayer2({ type: "score_value", value: d.detail.score });
+	})
+
+	window.addEventListener("group_stage", (payload: Event) => {
+		const d = payload as any as UpdateGroupStageEvent;
+		dispatchStage({ type: "value", value: d.detail.name });
+	})
+
+	window.addEventListener("reset_position", () => {
+		localStorage.clear();
+		window.location.reload();
+	})
+
 	//window.addEventListener("player1_name_plate", (payload: Event) => {
 	//	const d = payload as any as VisibilityToggleEvent;
+	//	dispatchPlayer1({ type: "visibility", })
 	//	setPlayer1({
 	//		...player1,
 	//		nameplate: {
