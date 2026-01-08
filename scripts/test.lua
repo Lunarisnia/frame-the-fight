@@ -1,5 +1,7 @@
 obs = obslua
 
+source_name = "Browser"
+
 function script_description()
 	return [[
 	   <center><h2>Frame The Fight</h2></center>
@@ -14,7 +16,7 @@ function script_description()
 end
 
 function send_json_to_browser(eventName, payload)
-	local browser = obs.obs_get_source_by_name("Browser")
+	local browser = obs.obs_get_source_by_name(source_name)
 	if browser then
 		local cd = obs.calldata_create()
 		obs.calldata_set_string(cd, "eventName", eventName)
@@ -147,9 +149,28 @@ function populate_list_with_countries(prop)
 	end
 end
 
+function populate_list_property_with_source_names(list_property)
+	local sources = obs.obs_enum_sources()
+	obs.obs_property_list_clear(list_property)
+	obs.obs_property_list_add_string(list_property, "", "")
+	for _, source in pairs(sources) do
+		local name = obs.obs_source_get_name(source)
+		obs.obs_property_list_add_string(list_property, name, name)
+	end
+	obs.source_list_release(sources)
+end
+
 function script_properties()
 	props = obs.obs_properties_create()
 
+	local list_property = obs.obs_properties_add_list(
+		props,
+		"source_name",
+		"Browser Source Name",
+		obs.OBS_COMBO_TYPE_LIST,
+		obs.OBS_COMBO_FORMAT_STRING
+	)
+	populate_list_property_with_source_names(list_property)
 	-- ==== THINGY
 	obs.obs_properties_add_button(props, "swap_players", "Swap Players", on_swap_players)
 	obs.obs_properties_add_button(props, "reset_scores", "Reset Scores", on_reset_scores)
@@ -231,6 +252,9 @@ stage = ""
 
 function script_update(settings)
 	g_settings = settings
+	local s_name = obs.obs_data_get_string(settings, "source_name")
+	source_name = s_name
+
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")
 	if player1["name"] ~= player1_name then
 		player1["name"] = player1_name
