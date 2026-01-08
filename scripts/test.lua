@@ -97,13 +97,12 @@ function on_reset_layout()
 	send_json_to_browser("reset_position", "{}")
 end
 
+g_settings = nil
+
 function on_swap_players()
 	local temp_player = player1
 	player1 = player2
 	player2 = temp_player
-	print("HELLo")
-	print(player1["name"])
-	print(player2["name"])
 
 	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
 	send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1["team"]))
@@ -114,22 +113,42 @@ function on_swap_players()
 	send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2["team"]))
 	send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2["country"]))
 	send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
+	if g_settings then
+		obs.obs_data_set_string(g_settings, "player1_name", player1["name"])
+		obs.obs_data_set_string(g_settings, "player1_team", player1["team"])
+		obs.obs_data_set_string(g_settings, "player1_country", player1["country"])
+		obs.obs_data_set_int(g_settings, "player1_score", player1["score"])
+
+		obs.obs_data_set_string(g_settings, "player2_name", player2["name"])
+		obs.obs_data_set_string(g_settings, "player2_team", player2["team"])
+		obs.obs_data_set_string(g_settings, "player2_country", player2["country"])
+		obs.obs_data_set_int(g_settings, "player2_score", player2["score"])
+		return true
+	end
+	return false
 end
 
-function on_reset_scores(props, prop, settings)
+function on_reset_scores()
 	send_json_to_browser("player1_score", string.format('{"score":%d}', 0))
 	send_json_to_browser("player2_score", string.format('{"score":%d}', 0))
 	player1["score"] = 0
 	player2["score"] = 0
-	obs.obs_data_set_int(settings, "player1_score", 999)
+	if g_settings then
+		obs.obs_data_set_int(g_settings, "player1_score", 0)
+		obs.obs_data_set_int(g_settings, "player2_score", 0)
+		return true
+	end
+	return false
 end
 
 function script_properties()
 	props = obs.obs_properties_create()
 
-	local player1_group = obs.obs_properties_create()
+	-- ==== THINGY
 	obs.obs_properties_add_button(props, "swap_players", "Swap Players", on_swap_players)
 	obs.obs_properties_add_button(props, "reset_scores", "Reset Scores", on_reset_scores)
+
+	local player1_group = obs.obs_properties_create()
 
 	obs.obs_properties_add_text(player1_group, "player1_name", "Player Name", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(player1_group, "player1_team", "Team Name", obs.OBS_TEXT_DEFAULT)
@@ -191,6 +210,7 @@ player2 = {}
 stage = ""
 
 function script_update(settings)
+	g_settings = settings
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")
 	if player1["name"] ~= player1_name then
 		player1["name"] = player1_name
