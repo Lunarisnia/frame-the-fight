@@ -29,23 +29,102 @@ function send_json_to_browser(eventName, payload)
 end
 
 -- -------------- HOTKEY ---------------- --
-function on_send_message()
-	send_json_to_browser()
+function on_increment_score(target)
+	return function(pressed)
+		if not pressed then
+			return false
+		end
+		if target == "player1" then
+			if g_settings then
+				player1["score"] = math.min(player1["score"] + 1, 99)
+				obs.obs_data_set_int(g_settings, "player1_score", player1["score"])
+				send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
+				return true
+			end
+		else
+			if g_settings then
+				player2["score"] = math.min(player2["score"] + 1, 99)
+				obs.obs_data_set_int(g_settings, "player2_score", player2["score"])
+				send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
+				return true
+			end
+		end
+	end
 end
 
-hotkey_id = obs.OBS_INVALID_HOTKEY_ID
+function on_decrement_score(target)
+	return function(pressed)
+		if not pressed then
+			return false
+		end
+		if target == "player1" then
+			if g_settings then
+				player1["score"] = math.max(player1["score"] - 1, 0)
+				obs.obs_data_set_int(g_settings, "player1_score", player1["score"])
+				send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
+				return true
+			end
+		else
+			if g_settings then
+				player2["score"] = math.max(player2["score"] - 1, 0)
+				obs.obs_data_set_int(g_settings, "player2_score", player2["score"])
+				send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
+				return true
+			end
+		end
+	end
+end
+
+hotkeys = {
+	increment_score_p1 = obs.OBS_INVALID_HOTKEY_ID,
+	increment_score_p2 = obs.OBS_INVALID_HOTKEY_ID,
+
+	decrement_score_p1 = obs.OBS_INVALID_HOTKEY_ID,
+	decrement_score_p2 = obs.OBS_INVALID_HOTKEY_ID,
+
+	reset_scores = obs.OBS_INVALID_HOTKEY_ID,
+	swap_players = obs.OBS_INVALID_HOTKEY_ID,
+}
+hotkeys_callback = {
+	increment_score_p1 = on_increment_score("player1"),
+	increment_score_p2 = on_increment_score("player2"),
+
+	decrement_score_p1 = on_decrement_score("player1"),
+	decrement_score_p2 = on_decrement_score("player2"),
+
+	reset_scores = function()
+		return on_reset_scores()
+	end,
+	swap_players = function()
+		return on_swap_players()
+	end,
+}
+hotkeys_label = {
+	increment_score_p1 = "Increment Score (P1/Left)",
+	increment_score_p2 = "Increment Score (P2/Right)",
+
+	decrement_score_p1 = "Decrement Score (P1/Left)",
+	decrement_score_p2 = "Decrement Score (P2/Right)",
+
+	reset_scores = "Reset Scores",
+	swap_players = "Swap Players",
+}
 
 function script_load(settings)
-	hotkey_id = obs.obs_hotkey_register_frontend(script_path(), "Send Event", on_send_message)
-	local hotkey_save_array = obs.obs_data_get_array(settings, "send_event")
-	obs.obs_hotkey_load(hotkey_id, hotkey_save_array)
-	obs.obs_data_array_release(hotkey_save_array)
+	for key, _ in pairs(hotkeys) do
+		hotkeys[key] = obs.obs_hotkey_register_frontend(script_path(), hotkeys_label[key], hotkeys_callback[key])
+		local hotkey_save_array = obs.obs_data_get_array(settings, key)
+		obs.obs_hotkey_load(hotkeys[key], hotkey_save_array)
+		obs.obs_data_array_release(hotkey_save_array)
+	end
 end
 
 function script_save(settings)
-	local hotkey_save_array = obs.obs_hotkey_save(hotkey_id)
-	obs.obs_data_set_array(settings, "send_event", hotkey_save_array)
-	obs.obs_data_array_release(hotkey_save_array)
+	for key, _ in pairs(hotkeys) do
+		local hotkey_save_array = obs.obs_hotkey_save(hotkeys[key])
+		obs.obs_data_set_array(settings, key, hotkey_save_array)
+		obs.obs_data_array_release(hotkey_save_array)
+	end
 end
 
 function script_defaults(settings)
@@ -239,10 +318,6 @@ function script_properties()
 	obs.obs_properties_add_bool(visibility_group, "group_stage_plate", "Group Stage")
 	obs.obs_properties_add_bool(visibility_group, "tournament_logo_plate", "Tournament Logo")
 	obs.obs_properties_add_group(props, "visibility_group", "Toggle Visibility", obs.OBS_GROUP_NORMAL, visibility_group)
-	-- obs.obs_properties_add_bool(props, "test", "TEAT")
-
-	-- obs.obs_properties_add_float_slider(props, "frequency", "Shake frequency", 0.1, 20, 0.1)
-	-- obs.obs_properties_add_int_slider(props, "amplitude", "Shake amplitude", 0, 90, 1)
 	return props
 end
 
