@@ -12,24 +12,24 @@ function App() {
         <Frame src={ctx.player1.nameplate.artwork} inverse={false} />
       </Draggable>
       <Draggable x={ctx.player1.score.position.x} y={ctx.player1.score.position.y} visible={ctx.player1.score.visible} setPosition={ctx.setPlayer1ScorePosition}>
-        <Frame src="score.png" inverse={false} />
+        <Frame src={ctx.player1.score.artwork} inverse={false} />
       </Draggable>
       <Draggable x={ctx.player1.country.position.x} y={ctx.player1.country.position.y} visible={ctx.player1.country.visible} setPosition={ctx.setPlayer1CountryPosition}>
-        <Frame src="country.png" inverse={false} />
+        <Frame src={ctx.player1.country.artwork} inverse={false} />
       </Draggable>
 
       <Draggable x={ctx.player2.nameplate.position.x} y={ctx.player2.nameplate.position.y} visible={ctx.player2.nameplate.visible} setPosition={ctx.setPlayer2HealthPosition}>
-        <Frame src="nameplate.png" inverse={true} />
+        <Frame src={ctx.player2.nameplate.artwork} inverse={true} />
       </Draggable>
       <Draggable x={ctx.player2.score.position.x} y={ctx.player2.score.position.y} visible={ctx.player2.score.visible} setPosition={ctx.setPlayer2ScorePosition}>
-        <Frame src="score.png" inverse={true} />
+        <Frame src={ctx.player2.score.artwork} inverse={true} />
       </Draggable>
       <Draggable x={ctx.player2.country.position.x} y={ctx.player2.country.position.y} visible={ctx.player2.country.visible} setPosition={ctx.setPlayer2CountryPosition}>
-        <Frame src="country.png" inverse={true} />
+        <Frame src={ctx.player2.country.artwork} inverse={true} />
       </Draggable>
 
       <Draggable x={ctx.stage.position.x} y={ctx.stage.position.y} visible={ctx.stage.visible} setPosition={ctx.setStagePosition}>
-        <Frame src="group.png" inverse={false} />
+        <Frame src={ctx.stage.artwork} inverse={false} />
       </Draggable>
 
       <Draggable x={ctx.logo.position.x} y={ctx.logo.position.y} setPosition={ctx.setLogoPosition} visible={ctx.logo.visible}>

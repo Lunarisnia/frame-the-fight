@@ -59,6 +59,7 @@ const newPlayerConfig = () => {
 			name: "",
 			fontSize: 14,
 			visible: true,
+			artwork: "country.png"
 		},
 		score: {
 			position: { x: 0, y: 0 },
@@ -66,6 +67,7 @@ const newPlayerConfig = () => {
 			value: 0,
 			fontSize: 14,
 			visible: true,
+			artwork: "score.png",
 		},
 	};
 }
@@ -79,6 +81,10 @@ const toBase64Img = (binaryString: string) => {
 	return "data:image/png;base64," + binaryString;
 }
 
+const parseArtworkUpdate = (code: string, image: string) => {
+	return code == "NEW" ? toBase64Img(image) : image;
+}
+
 const playerReducer = (state: Player, action: ReducerAction) => {
 	switch (action.type) {
 		case "name_plate_artwork":
@@ -86,7 +92,23 @@ const playerReducer = (state: Player, action: ReducerAction) => {
 				...state,
 				nameplate: {
 					...state.nameplate,
-					artwork: action.value.code == "NEW" ? toBase64Img(action.value.image) : action.value.image,
+					artwork: parseArtworkUpdate(action.value.code, action.value.image),
+				}
+			} as Player;
+		case "score_plate_artwork":
+			return {
+				...state,
+				score: {
+					...state.score,
+					artwork: parseArtworkUpdate(action.value.code, action.value.image),
+				}
+			} as Player;
+		case "country_plate_artwork":
+			return {
+				...state,
+				country: {
+					...state.country,
+					artwork: parseArtworkUpdate(action.value.code, action.value.image),
 				}
 			} as Player;
 		case "name_plate_visibility":
@@ -210,6 +232,11 @@ const playerReducer = (state: Player, action: ReducerAction) => {
 
 const stageReducer = (state: Stage, action: ReducerAction) => {
 	switch (action.type) {
+		case "artwork":
+			return {
+				...state,
+				artwork: parseArtworkUpdate(action.value.code, action.value.image),
+			} as Stage;
 		case "plate_position":
 			return {
 				...state,
@@ -260,7 +287,10 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	const [activePreset, ___] = useState<Game>("tekken8");
 	const [player1, dispatchPlayer1] = useReducer(playerReducer, newPlayerConfig());
 	const [player2, dispatchPlayer2] = useReducer(playerReducer, newPlayerConfig());
-	const [stage, dispatchStage] = useReducer(stageReducer, { position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14, visible: true });
+	const [stage, dispatchStage] = useReducer(stageReducer, {
+		position: { x: 0, y: 0 }, textPosition: { x: 0, y: 0 }, value: "", fontSize: 14,
+		visible: true, artwork: "group.png"
+	});
 	const [logo, dispatchLogo] = useReducer(logoReducer, { position: { x: 0, y: 0 }, size: { w: 180, h: 180 }, visible: true });
 	const [font, setFont] = useState("Roboto");
 	const p = getPreset(activePreset);
@@ -458,14 +488,46 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		dispatchLogo({ type: "visibility", value: d.detail.value });
 	})
 
+	const updateArtworkPayload = (key: string, defaultImage: string, payload: ArtworkUpdateEvent) => {
+		return {
+			type: key,
+			value: {
+				code: payload.detail.image == "DEFAULT" ? "DEFAULT" : "NEW",
+				image: payload.detail.image == "DEFAULT" ? defaultImage : payload.detail.image,
+			}
+		}
+	}
+
 	window.addEventListener("player1_name_plate_artwork", (payload: Event) => {
 		const d = payload as any as ArtworkUpdateEvent
-		dispatchPlayer1({
-			type: "name_plate_artwork", value: {
-				code: d.detail.image == "DEFAULT" ? "DEFAULT" : "NEW",
-				image: d.detail.image == "DEFAULT" ? p.player1.nameplate.artwork : d.detail.image,
-			}
-		});
+		dispatchPlayer1(updateArtworkPayload("name_plate_artwork", p.player1.nameplate.artwork, d));
+	})
+	window.addEventListener("player1_score_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		dispatchPlayer1(updateArtworkPayload("score_plate_artwork", p.player1.score.artwork, d));
+	})
+	window.addEventListener("player1_country_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		dispatchPlayer1(updateArtworkPayload("country_plate_artwork", p.player1.country.artwork, d));
+	})
+
+	window.addEventListener("player2_name_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		dispatchPlayer2(updateArtworkPayload("name_plate_artwork", p.player2.nameplate.artwork, d));
+	})
+	window.addEventListener("player2_score_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		dispatchPlayer2(updateArtworkPayload("score_plate_artwork", p.player2.score.artwork, d));
+	})
+	window.addEventListener("player2_country_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		dispatchPlayer2(updateArtworkPayload("country_plate_artwork", p.player2.country.artwork, d));
+	})
+
+
+	window.addEventListener("group_stage_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		dispatchStage(updateArtworkPayload("artwork", p.stage.artwork, d));
 	})
 
 	return (

@@ -315,20 +315,6 @@ function script_properties()
 	-- ==== THINGY
 	obs.obs_properties_add_button(props, "swap_players", "Swap Players", on_swap_players)
 	obs.obs_properties_add_button(props, "reset_scores", "Reset Scores", on_reset_scores)
-	obs.obs_properties_add_path(
-		props,
-		"player1_name_plate_artwork",
-		"Name Plate Artwork",
-		obs.OBS_PATH_FILE,
-		"*.png *.jpeg *.jpg *.svg *.webp",
-		nil
-	)
-	obs.obs_properties_add_button(
-		props,
-		"player1_name_plate_artwork_reset",
-		"Reset",
-		on_reset_artwork("player1_name_plate_artwork")
-	)
 
 	local player1_group = obs.obs_properties_create()
 
@@ -394,6 +380,135 @@ function script_properties()
 	obs.obs_properties_add_bool(visibility_group, "group_stage_plate", "Group Stage")
 	obs.obs_properties_add_bool(visibility_group, "tournament_logo_plate", "Tournament Logo")
 	obs.obs_properties_add_group(props, "visibility_group", "Toggle Visibility", obs.OBS_GROUP_NORMAL, visibility_group)
+
+	local artwork_group = obs.obs_properties_create()
+
+	local player1_artwork_group = obs.obs_properties_create()
+	obs.obs_properties_add_path(
+		player1_artwork_group,
+		"player1_name_plate_artwork",
+		"Name Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		player1_artwork_group,
+		"player1_name_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player1_name_plate_artwork")
+	)
+	obs.obs_properties_add_path(
+		player1_artwork_group,
+		"player1_score_plate_artwork",
+		"Score Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		player1_artwork_group,
+		"player1_score_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player1_score_plate_artwork")
+	)
+	obs.obs_properties_add_path(
+		player1_artwork_group,
+		"player1_country_plate_artwork",
+		"Country Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		player1_artwork_group,
+		"player1_country_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player1_country_plate_artwork")
+	)
+
+	obs.obs_properties_add_group(
+		artwork_group,
+		"player1_artwork_group",
+		"Player 1 (Left)",
+		obs.OBS_GROUP_NORMAL,
+		player1_artwork_group
+	)
+
+	local player2_artwork_group = obs.obs_properties_create()
+	obs.obs_properties_add_path(
+		player2_artwork_group,
+		"player2_name_plate_artwork",
+		"Name Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		player2_artwork_group,
+		"player2_name_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player2_name_plate_artwork")
+	)
+	obs.obs_properties_add_path(
+		player2_artwork_group,
+		"player2_score_plate_artwork",
+		"Score Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		player2_artwork_group,
+		"player2_score_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player2_score_plate_artwork")
+	)
+	obs.obs_properties_add_path(
+		player2_artwork_group,
+		"player2_country_plate_artwork",
+		"Country Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		player2_artwork_group,
+		"player2_country_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player2_country_plate_artwork")
+	)
+
+	obs.obs_properties_add_group(
+		artwork_group,
+		"player2_artwork_group",
+		"Player 2 (Right)",
+		obs.OBS_GROUP_NORMAL,
+		player2_artwork_group
+	)
+
+	obs.obs_properties_add_path(
+		artwork_group,
+		"group_stage_plate_artwork",
+		"Group Stage Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *.jpg",
+		nil
+	)
+	obs.obs_properties_add_button(
+		artwork_group,
+		"group_stage_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("group_stage_plate_artwork")
+	)
+	obs.obs_properties_add_group(
+		props,
+		"artwork_group",
+		"Plate Artwork Customization",
+		obs.OBS_GROUP_NORMAL,
+		artwork_group
+	)
+
 	return props
 end
 
@@ -401,20 +516,34 @@ player1 = {}
 player2 = {}
 stage = ""
 
+artwork_keys = {
+	"player1_name_plate_artwork",
+	"player1_score_plate_artwork",
+	"player1_country_plate_artwork",
+
+	"player2_name_plate_artwork",
+	"player2_score_plate_artwork",
+	"player2_country_plate_artwork",
+
+	"group_stage_plate_artwork",
+}
+
 function script_update(settings)
 	g_settings = settings
 	local s_name = obs.obs_data_get_string(settings, "source_name")
 	source_name = s_name
 
-	local player1_name_plate_artwork = obs.obs_data_get_string(settings, "player1_name_plate_artwork")
-	if player1["name_plate_artwork"] ~= player1_name_plate_artwork then
-		local encoded = "DEFAULT"
-		if player1_name_plate_artwork ~= "" then
-			local bin = read_image_binary(player1_name_plate_artwork)
-			encoded = base64_encode(bin)
+	for _, key in ipairs(artwork_keys) do
+		local artwork = obs.obs_data_get_string(settings, key)
+		if player1[key] ~= artwork then
+			local encoded = "DEFAULT"
+			if artwork ~= "" then
+				local bin = read_image_binary(artwork)
+				encoded = base64_encode(bin)
+			end
+			player1[key] = artwork
+			send_json_to_browser(key, string.format('{"image":"%s"}', encoded))
 		end
-		player1["name_plate_artwork"] = player1_name_plate_artwork
-		send_json_to_browser("player1_name_plate_artwork", string.format('{"image":"%s"}', encoded))
 	end
 
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")

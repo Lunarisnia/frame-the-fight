@@ -11,6 +11,7 @@ export interface Stage {
 	fontSize: number
 	value: string
 	visible: boolean
+	artwork: string,
 }
 
 export interface Logo {
@@ -39,6 +40,7 @@ export interface Player {
 		textPosition: Position
 		name: string
 		fontSize: number,
+		artwork: string,
 		visible: boolean,
 	}
 	score: {
@@ -47,6 +49,7 @@ export interface Player {
 		value: number
 		fontSize: number,
 		visible: boolean,
+		artwork: string,
 	}
 }
 
@@ -100,6 +103,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			name: "",
 			fontSize: 14,
 			visible: true,
+			artwork: "country.png",
 		},
 		score: {
 			position: newPosition(),
@@ -107,6 +111,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			value: 0,
 			fontSize: 14,
 			visible: true,
+			artwork: "score.png"
 		},
 	},
 	setLogoPosition() {
@@ -170,6 +175,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			nameFontSize: 14,
 			teamFontSize: 14,
 			visible: true,
+			artwork: "nameplate.png",
 		},
 		country: {
 			position: newPosition(),
@@ -177,6 +183,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			name: "",
 			fontSize: 14,
 			visible: true,
+			artwork: "country.png",
 		},
 		score: {
 			position: newPosition(),
@@ -184,6 +191,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			value: 0,
 			fontSize: 14,
 			visible: true,
+			artwork: "score.png"
 		},
 	},
 	stage: {
@@ -192,6 +200,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 		fontSize: 14,
 		value: "",
 		visible: true,
+		artwork: "group.png",
 	},
 	logo: {
 		size: {

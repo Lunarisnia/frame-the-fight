@@ -43,6 +43,7 @@ const preset: Preset = {
 				name: country["ID"],
 				fontSize: 15,
 				visible: true,
+				artwork: "country.png",
 			},
 			score: {
 				position: {
@@ -56,6 +57,7 @@ const preset: Preset = {
 				value: 0,
 				fontSize: 15,
 				visible: true,
+				artwork: "score.png",
 			},
 		},
 		player2: {
@@ -91,6 +93,7 @@ const preset: Preset = {
 				name: country["GB"],
 				fontSize: 15,
 				visible: true,
+				artwork: "country.png",
 			},
 			score: {
 				position: {
@@ -104,6 +107,7 @@ const preset: Preset = {
 				value: 0,
 				fontSize: 15,
 				visible: true,
+				artwork: "score.png",
 			},
 		},
 		stage: {
@@ -118,6 +122,7 @@ const preset: Preset = {
 			value: "Grand Final",
 			fontSize: 15,
 			visible: true,
+			artwork: "group.png"
 		},
 		font: '"Roboto"',
 		logo: {
@@ -196,6 +201,7 @@ const preset: Preset = {
 				team: "",
 				nameFontSize: 14,
 				teamFontSize: 14,
+				artwork: "nameplate.png",
 				visible: true,
 			},
 			country: {
@@ -207,6 +213,7 @@ const preset: Preset = {
 				name: "",
 				fontSize: 14,
 				visible: true,
+				artwork: "country.png"
 			},
 			score: {
 				position: {
@@ -217,6 +224,7 @@ const preset: Preset = {
 				value: 0,
 				fontSize: 14,
 				visible: true,
+				artwork: "score.png"
 			},
 		},
 		player2: {
@@ -232,6 +240,7 @@ const preset: Preset = {
 				nameFontSize: 14,
 				teamFontSize: 14,
 				visible: true,
+				artwork: "nameplate.png"
 			},
 			country: {
 				position: {
@@ -242,6 +251,7 @@ const preset: Preset = {
 				name: "",
 				fontSize: 14,
 				visible: true,
+				artwork: "country.png"
 			},
 			score: {
 				position: {
@@ -252,6 +262,7 @@ const preset: Preset = {
 				value: 0,
 				fontSize: 14,
 				visible: true,
+				artwork: "score.png"
 			},
 		},
 		stage: {
@@ -260,6 +271,7 @@ const preset: Preset = {
 			value: "",
 			fontSize: 14,
 			visible: true,
+			artwork: "group.png"
 		},
 		font: "Roboto",
 		logo: {
