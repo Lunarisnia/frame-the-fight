@@ -82,16 +82,11 @@ const toBase64Img = (binaryString: string) => {
 const playerReducer = (state: Player, action: ReducerAction) => {
 	switch (action.type) {
 		case "name_plate_artwork":
-
 			return {
 				...state,
 				nameplate: {
 					...state.nameplate,
-					position: {
-						x: 200,
-						y: 200,
-					},
-					artwork: toBase64Img(action.value),
+					artwork: action.value.code == "NEW" ? toBase64Img(action.value.image) : action.value.image,
 				}
 			} as Player;
 		case "name_plate_visibility":
@@ -465,8 +460,12 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 
 	window.addEventListener("player1_name_plate_artwork", (payload: Event) => {
 		const d = payload as any as ArtworkUpdateEvent
-		//dispatchLogo({ type: "visibility", value: false });
-		dispatchPlayer1({ type: "name_plate_artwork", value: d.detail.image });
+		dispatchPlayer1({
+			type: "name_plate_artwork", value: {
+				code: d.detail.image == "DEFAULT" ? "DEFAULT" : "NEW",
+				image: d.detail.image == "DEFAULT" ? p.player1.nameplate.artwork : d.detail.image,
+			}
+		});
 	})
 
 	return (

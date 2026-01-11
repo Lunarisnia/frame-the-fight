@@ -293,6 +293,14 @@ function base64_encode(data)
 	return table.concat(buffer)
 end
 
+function on_reset_artwork(key)
+	return function()
+		obs.obs_data_set_string(g_settings, key, "")
+		send_json_to_browser(key, '{"image":"DEFAULT"}')
+		return true
+	end
+end
+
 function script_properties()
 	props = obs.obs_properties_create()
 
@@ -312,8 +320,14 @@ function script_properties()
 		"player1_name_plate_artwork",
 		"Name Plate Artwork",
 		obs.OBS_PATH_FILE,
-		"*.png *.jpeg *jpg",
+		"*.png *.jpeg *.jpg *.svg *.webp",
 		nil
+	)
+	obs.obs_properties_add_button(
+		props,
+		"player1_name_plate_artwork_reset",
+		"Reset",
+		on_reset_artwork("player1_name_plate_artwork")
 	)
 
 	local player1_group = obs.obs_properties_create()
@@ -394,8 +408,11 @@ function script_update(settings)
 
 	local player1_name_plate_artwork = obs.obs_data_get_string(settings, "player1_name_plate_artwork")
 	if player1["name_plate_artwork"] ~= player1_name_plate_artwork then
-		local bin = read_image_binary(player1_name_plate_artwork)
-		local encoded = base64_encode(bin)
+		local encoded = "DEFAULT"
+		if player1_name_plate_artwork ~= "" then
+			local bin = read_image_binary(player1_name_plate_artwork)
+			encoded = base64_encode(bin)
+		end
 		player1["name_plate_artwork"] = player1_name_plate_artwork
 		send_json_to_browser("player1_name_plate_artwork", string.format('{"image":"%s"}', encoded))
 	end
