@@ -34,6 +34,11 @@ interface VisibilityToggleEvent {
 		value: boolean
 	}
 }
+interface ArtworkUpdateEvent {
+	detail: {
+		image: string
+	}
+}
 
 const newPlayerConfig = () => {
 	return {
@@ -46,6 +51,7 @@ const newPlayerConfig = () => {
 			teamFontSize: 14,
 			nameFontSize: 14,
 			visible: true,
+			artwork: "nameplate.png",
 		},
 		country: {
 			position: { x: 0, y: 0 },
@@ -69,8 +75,25 @@ interface ReducerAction {
 	value: any
 }
 
+const toBase64Img = (binaryString: string) => {
+	return "data:image/png;base64," + binaryString;
+}
+
 const playerReducer = (state: Player, action: ReducerAction) => {
 	switch (action.type) {
+		case "name_plate_artwork":
+
+			return {
+				...state,
+				nameplate: {
+					...state.nameplate,
+					position: {
+						x: 200,
+						y: 200,
+					},
+					artwork: toBase64Img(action.value),
+				}
+			} as Player;
 		case "name_plate_visibility":
 			return {
 				...state,
@@ -438,6 +461,12 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	window.addEventListener("tournament_logo_plate", (payload: Event) => {
 		const d = payload as any as VisibilityToggleEvent;
 		dispatchLogo({ type: "visibility", value: d.detail.value });
+	})
+
+	window.addEventListener("player1_name_plate_artwork", (payload: Event) => {
+		const d = payload as any as ArtworkUpdateEvent
+		//dispatchLogo({ type: "visibility", value: false });
+		dispatchPlayer1({ type: "name_plate_artwork", value: d.detail.image });
 	})
 
 	return (

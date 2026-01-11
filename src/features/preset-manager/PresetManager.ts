@@ -28,6 +28,7 @@ const preset: Preset = {
 				team: "TEAM1",
 				nameFontSize: 15,
 				teamFontSize: 15,
+				artwork: "nameplate.png",
 				visible: true,
 			},
 			country: {
@@ -72,6 +73,7 @@ const preset: Preset = {
 					y: 0
 				},
 				name: "Player 2 (L)",
+				artwork: "nameplate.png",
 				team: "TEAM2",
 				nameFontSize: 15,
 				teamFontSize: 15,

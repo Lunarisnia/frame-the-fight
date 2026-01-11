@@ -1,3 +1,4 @@
+local bit = require("bit") -- Standard in LuaJIT
 obs = obslua
 
 source_name = "Browser"
@@ -239,6 +240,59 @@ function populate_list_property_with_source_names(list_property)
 	obs.source_list_release(sources)
 end
 
+-- This function reads the file into a binary string
+function read_image_binary(path)
+	if path == nil or path == "" then
+		return nil
+	end
+
+	-- "rb" stands for Read Binary
+	local file, err = io.open(path, "rb")
+
+	if not file then
+		print("Error opening file: " .. tostring(err))
+		return nil
+	end
+
+	-- Read the entire content of the file
+	local data = file:read("*all")
+	file:close()
+
+	return data
+end
+
+-- This encodes it in base64 for transfer
+function base64_encode(data)
+	local charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	local buffer = {}
+
+	for i = 1, #data, 3 do
+		-- Get byte values
+		local b1 = data:byte(i)
+		local b2 = data:byte(i + 1)
+		local b3 = data:byte(i + 2)
+
+		-- Combine into a 24-bit integer using bit.lshift and bit.bor
+		local n = bit.bor(bit.lshift(b1, 16), bit.lshift(b2 or 0, 8), b3 or 0)
+
+		-- Extract 6-bit chunks using bit.rshift and bit.band
+		local v1 = bit.band(bit.rshift(n, 18), 0x3F)
+		local v2 = bit.band(bit.rshift(n, 12), 0x3F)
+		local v3 = bit.band(bit.rshift(n, 6), 0x3F)
+		local v4 = bit.band(n, 0x3F)
+
+		-- Map to characters
+		table.insert(buffer, charset:sub(v1 + 1, v1 + 1))
+		table.insert(buffer, charset:sub(v2 + 1, v2 + 1))
+
+		-- Handle padding logic
+		table.insert(buffer, b2 and charset:sub(v3 + 1, v3 + 1) or "=")
+		table.insert(buffer, b3 and charset:sub(v4 + 1, v4 + 1) or "=")
+	end
+
+	return table.concat(buffer)
+end
+
 function script_properties()
 	props = obs.obs_properties_create()
 
@@ -253,6 +307,14 @@ function script_properties()
 	-- ==== THINGY
 	obs.obs_properties_add_button(props, "swap_players", "Swap Players", on_swap_players)
 	obs.obs_properties_add_button(props, "reset_scores", "Reset Scores", on_reset_scores)
+	obs.obs_properties_add_path(
+		props,
+		"player1_name_plate_artwork",
+		"Name Plate Artwork",
+		obs.OBS_PATH_FILE,
+		"*.png *.jpeg *jpg",
+		nil
+	)
 
 	local player1_group = obs.obs_properties_create()
 
@@ -329,6 +391,14 @@ function script_update(settings)
 	g_settings = settings
 	local s_name = obs.obs_data_get_string(settings, "source_name")
 	source_name = s_name
+
+	local player1_name_plate_artwork = obs.obs_data_get_string(settings, "player1_name_plate_artwork")
+	if player1["name_plate_artwork"] ~= player1_name_plate_artwork then
+		local bin = read_image_binary(player1_name_plate_artwork)
+		local encoded = base64_encode(bin)
+		player1["name_plate_artwork"] = player1_name_plate_artwork
+		send_json_to_browser("player1_name_plate_artwork", string.format('{"image":"%s"}', encoded))
+	end
 
 	local player1_name = obs.obs_data_get_string(settings, "player1_name")
 	if player1["name"] ~= player1_name then

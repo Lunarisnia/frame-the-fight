@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <Draggable x={ctx.player1.nameplate.position.x} y={ctx.player1.nameplate.position.y} visible={ctx.player1.nameplate.visible} setPosition={ctx.setPlayer1HealthPosition} >
-        <Frame src="nameplate.png" inverse={false} />
+        <Frame src={ctx.player1.nameplate.artwork} inverse={false} />
       </Draggable>
       <Draggable x={ctx.player1.score.position.x} y={ctx.player1.score.position.y} visible={ctx.player1.score.visible} setPosition={ctx.setPlayer1ScorePosition}>
         <Frame src="score.png" inverse={false} />

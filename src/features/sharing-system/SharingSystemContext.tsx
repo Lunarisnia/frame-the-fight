@@ -31,6 +31,7 @@ export interface Player {
 		name: string
 		nameFontSize: number,
 		teamFontSize: number,
+		artwork: string,
 		visible: boolean,
 	}
 	country: {
@@ -90,6 +91,7 @@ export const SharingSystemContext = createContext<SharingSystemContextType>({
 			team: "",
 			nameFontSize: 14,
 			teamFontSize: 14,
+			artwork: "nameplate.png",
 			visible: true,
 		},
 		country: {
