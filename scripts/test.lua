@@ -1,6 +1,7 @@
 local bit = require("bit") -- Standard in LuaJIT
 obs = obslua
 
+g_settings = nil
 stage = ""
 source_name = "Browser"
 hotkeys = {
@@ -51,7 +52,6 @@ function on_change_score(target, solver)
 		if not pressed then
 			return false
 		end
-		player[target] = math.min(player[target] + 1, 99)
 		solver(target)
 		return set_int(target, player[target])
 	end
@@ -64,10 +64,16 @@ hotkeys_callback = {
 	decrement_score_p1 = on_change_score(player_keys.player1_score, subtract_score),
 	decrement_score_p2 = on_change_score(player_keys.player2_score, subtract_score),
 
-	reset_scores = function()
+	reset_scores = function(pressed)
+		if not pressed then
+			return false
+		end
 		return on_reset_scores()
 	end,
-	swap_players = function()
+	swap_players = function(pressed)
+		if not pressed then
+			return false
+		end
 		return on_swap_players()
 	end,
 }
@@ -165,6 +171,15 @@ function set_int(key, value)
 	return false
 end
 
+function set_string(key, value)
+	if g_settings then
+		obs.obs_data_set_string(g_settings, key, value)
+		send_json_to_browser(key, encode_string_payload(value))
+		return true
+	end
+	return false
+end
+
 function set_default_string(settings, key, value)
 	obs.obs_data_set_default_string(settings, key, value)
 	send_json_to_browser(key, encode_string_payload(value))
@@ -238,48 +253,41 @@ function on_reset_layout()
 	send_json_to_browser("reset_position", "{}")
 end
 
-g_settings = nil
-
 function on_swap_players()
-	local temp_player = player1
-	player1 = player2
-	player2 = temp_player
+	local player1_name = player.player1_name
+	local player1_team = player.player1_team
+	local player1_country = player.player1_country
+	local player1_score = player.player1_score
 
-	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
-	send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1["team"]))
-	send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1["country"]))
-	send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
+	player[player_keys.player1_name] = player.player2_name
+	player[player_keys.player1_team] = player.player2_team
+	player[player_keys.player1_country] = player.player2_country
+	player[player_keys.player1_score] = player.player2_score
 
-	send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2["name"]))
-	send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2["team"]))
-	send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2["country"]))
-	send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
-	if g_settings then
-		obs.obs_data_set_string(g_settings, "player1_name", player1["name"])
-		obs.obs_data_set_string(g_settings, "player1_team", player1["team"])
-		obs.obs_data_set_string(g_settings, "player1_country", player1["country"])
-		obs.obs_data_set_int(g_settings, "player1_score", player1["score"])
+	player[player_keys.player2_name] = player1_name
+	player[player_keys.player2_team] = player1_team
+	player[player_keys.player2_country] = player1_country
+	player[player_keys.player2_score] = player1_score
 
-		obs.obs_data_set_string(g_settings, "player2_name", player2["name"])
-		obs.obs_data_set_string(g_settings, "player2_team", player2["team"])
-		obs.obs_data_set_string(g_settings, "player2_country", player2["country"])
-		obs.obs_data_set_int(g_settings, "player2_score", player2["score"])
-		return true
-	end
-	return false
+	set_string(player_keys.player1_name, player.player1_name)
+	set_string(player_keys.player1_team, player.player1_team)
+	set_string(player_keys.player1_country, player.player1_country)
+	set_int(player_keys.player1_score, player.player1_score)
+
+	set_string(player_keys.player2_name, player.player2_name)
+	set_string(player_keys.player2_team, player.player2_team)
+	set_string(player_keys.player2_country, player.player2_country)
+	set_int(player_keys.player2_score, player.player2_score)
+
+	return true
 end
 
 function on_reset_scores()
-	send_json_to_browser("player1_score", string.format('{"score":%d}', 0))
-	send_json_to_browser("player2_score", string.format('{"score":%d}', 0))
-	player1["score"] = 0
-	player2["score"] = 0
-	if g_settings then
-		obs.obs_data_set_int(g_settings, "player1_score", 0)
-		obs.obs_data_set_int(g_settings, "player2_score", 0)
-		return true
-	end
-	return false
+	player[player_keys.player1_score] = 0
+	player[player_keys.player1_score] = 0
+	set_int(player_keys.player1_score, 0)
+	set_int(player_keys.player2_score, 0)
+	return true
 end
 
 function populate_list_with_countries(prop)
@@ -355,7 +363,7 @@ end
 function on_reset_artwork(key)
 	return function()
 		obs.obs_data_set_string(g_settings, key, "")
-		send_json_to_browser(key, '{"image":"DEFAULT"}')
+		send_json_to_browser(key, encode_string_payload("DEFAULT"))
 		return true
 	end
 end
@@ -377,49 +385,49 @@ function script_properties()
 
 	local player1_group = obs.obs_properties_create()
 
-	obs.obs_properties_add_text(player1_group, "player1_name", "Player Name", obs.OBS_TEXT_DEFAULT)
-	obs.obs_properties_add_text(player1_group, "player1_team", "Team Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player1_group, player_keys.player1_name, "Player Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player1_group, player_keys.player1_team, "Team Name", obs.OBS_TEXT_DEFAULT)
 	local list_property1 = obs.obs_properties_add_list(
 		player1_group,
-		"player1_country",
+		player_keys.player1_country,
 		"Country",
 		obs.OBS_COMBO_TYPE_LIST,
 		obs.OBS_COMBO_FORMAT_STRING
 	)
 	populate_list_with_countries(list_property1)
-	obs.obs_properties_add_int(player1_group, "player1_score", "Score", 0, 99, 1)
+	obs.obs_properties_add_int(player1_group, player_keys.player1_score, "Score", 0, 99, 1)
 
 	obs.obs_properties_add_group(props, "player1_group", "Player 1 (Left)", obs.OBS_GROUP_NORMAL, player1_group)
 
 	local player2_group = obs.obs_properties_create()
-	obs.obs_properties_add_text(player2_group, "player2_name", "Player Name", obs.OBS_TEXT_DEFAULT)
-	obs.obs_properties_add_text(player2_group, "player2_team", "Team Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player2_group, player_keys.player2_name, "Player Name", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(player2_group, player_keys.player2_team, "Team Name", obs.OBS_TEXT_DEFAULT)
 	local list_property2 = obs.obs_properties_add_list(
 		player2_group,
-		"player2_country",
+		player_keys.player2_country,
 		"Country",
 		obs.OBS_COMBO_TYPE_LIST,
 		obs.OBS_COMBO_FORMAT_STRING
 	)
 	populate_list_with_countries(list_property2)
-	obs.obs_properties_add_int(player2_group, "player2_score", "Score", 0, 99, 1)
+	obs.obs_properties_add_int(player2_group, player_keys.player2_score, "Score", 0, 99, 1)
 
 	obs.obs_properties_add_group(props, "player2_group", "Player 2 (Right)", obs.OBS_GROUP_NORMAL, player2_group)
 
-	obs.obs_properties_add_text(props, "group_stage", "Group Stage", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(props, player_keys.group_stage, "Group Stage", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_button(props, "reset_position", "Reset Layout", on_reset_layout)
 
 	local visibility_group = obs.obs_properties_create()
 
 	local visibility_group_player1 = obs.obs_properties_create()
-	obs.obs_properties_add_bool(visibility_group_player1, "player1_name_plate", "Name")
-	obs.obs_properties_add_bool(visibility_group_player1, "player1_score_plate", "Score")
-	obs.obs_properties_add_bool(visibility_group_player1, "player1_country_plate", "Country")
+	obs.obs_properties_add_bool(visibility_group_player1, player_keys.player1_name_plate, "Name")
+	obs.obs_properties_add_bool(visibility_group_player1, player_keys.player1_score_plate, "Score")
+	obs.obs_properties_add_bool(visibility_group_player1, player_keys.player1_country_plate, "Country")
 
 	local visibility_group_player2 = obs.obs_properties_create()
-	obs.obs_properties_add_bool(visibility_group_player2, "player2_name_plate", "Name")
-	obs.obs_properties_add_bool(visibility_group_player2, "player2_score_plate", "Score")
-	obs.obs_properties_add_bool(visibility_group_player2, "player2_country_plate", "Country")
+	obs.obs_properties_add_bool(visibility_group_player2, player_keys.player2_name_plate, "Name")
+	obs.obs_properties_add_bool(visibility_group_player2, player_keys.player2_score_plate, "Score")
+	obs.obs_properties_add_bool(visibility_group_player2, player_keys.player2_country_plate, "Country")
 
 	obs.obs_properties_add_group(
 		visibility_group,
@@ -436,8 +444,8 @@ function script_properties()
 		visibility_group_player2
 	)
 
-	obs.obs_properties_add_bool(visibility_group, "group_stage_plate", "Group Stage")
-	obs.obs_properties_add_bool(visibility_group, "tournament_logo_plate", "Tournament Logo")
+	obs.obs_properties_add_bool(visibility_group, player_keys.group_stage_plate, "Group Stage")
+	obs.obs_properties_add_bool(visibility_group, player_keys.tournament_logo_plate, "Tournament Logo")
 	obs.obs_properties_add_group(props, "visibility_group", "Toggle Visibility", obs.OBS_GROUP_NORMAL, visibility_group)
 
 	local artwork_group = obs.obs_properties_create()
@@ -576,115 +584,44 @@ player2 = {}
 
 function script_update(settings)
 	g_settings = settings
-	local s_name = obs.obs_data_get_string(settings, "source_name")
+	local s_name = obs.obs_data_get_string(settings, player_keys.source_name)
 	source_name = s_name
 
 	for _, key in ipairs(artwork_keys) do
 		local artwork = obs.obs_data_get_string(settings, key)
-		if player1[key] ~= artwork then
+		if player[key] ~= artwork then
 			local encoded = "DEFAULT"
 			if artwork ~= "" then
 				local bin = read_image_binary(artwork)
 				encoded = base64_encode(bin)
 			end
-			player1[key] = artwork
-			send_json_to_browser(key, string.format('{"image":"%s"}', encoded))
+			player[key] = artwork
+			send_json_to_browser(key, encode_string_payload(encoded))
 		end
 	end
 
-	local player1_name = obs.obs_data_get_string(settings, "player1_name")
-	if player1["name"] ~= player1_name then
-		player1["name"] = player1_name
-		send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1["name"]))
-	end
-	local player1_team = obs.obs_data_get_string(settings, "player1_team")
-	if player1["team"] ~= player1_team then
-		player1["team"] = player1_team
-		send_json_to_browser("player1_team", string.format('{"name":"%s"}', player1_team))
-	end
-	local player1_country = obs.obs_data_get_string(settings, "player1_country")
-	if player1["country"] ~= player1_country then
-		player1["country"] = player1_country
-		send_json_to_browser("player1_country", string.format('{"name":"%s"}', player1_country))
-	end
-	local player1_score = obs.obs_data_get_int(settings, "player1_score")
-	if player1["score"] ~= player1_score then
-		player1["score"] = player1_score
-		send_json_to_browser("player1_score", string.format('{"score":%d}', player1_score))
-	end
+	for key, _ in pairs(player_keys) do
+		local value = obs.obs_data_get_string(settings, key)
+		local isInt = false
+		local isBool = false
+		if key == player_keys.player1_score or key == player_keys.player2_score then
+			value = obs.obs_data_get_int(settings, key)
+			isInt = true
+		elseif string.find(key, "_plate", 1, true) ~= nil then
+			value = obs.obs_data_get_bool(settings, key)
+			isBool = true
+		end
 
-	local player1_name_plate = obs.obs_data_get_bool(settings, "player1_name_plate")
-	if player1["name_plate"] ~= player1_name_plate then
-		player1["name_plate"] = player1_name_plate
-		send_json_to_browser("player1_name_plate", string.format('{"value":%s}', player1_name_plate))
-	end
-	local player1_score_plate = obs.obs_data_get_bool(settings, "player1_score_plate")
-	if player1["score_plate"] ~= player1_score_plate then
-		player1["score_plate"] = player1_score_plate
-		send_json_to_browser("player1_score_plate", string.format('{"value":%s}', player1_score_plate))
-	end
-	local player1_country_plate = obs.obs_data_get_bool(settings, "player1_country_plate")
-	if player1["country_plate"] ~= player1_country_plate then
-		player1["country_plate"] = player1_country_plate
-		send_json_to_browser("player1_country_plate", string.format('{"value":%s}', player1_country_plate))
-	end
-
-	-- ================ PLAYER 2 ====================
-
-	local player2_name = obs.obs_data_get_string(settings, "player2_name")
-	if player2["name"] ~= player2_name then
-		player2["name"] = player2_name
-		send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2["name"]))
-	end
-	local player2_team = obs.obs_data_get_string(settings, "player2_team")
-	if player2["team"] ~= player2_team then
-		player2["team"] = player2_team
-		send_json_to_browser("player2_team", string.format('{"name":"%s"}', player2_team))
-	end
-	local player2_country = obs.obs_data_get_string(settings, "player2_country")
-	if player2["country"] ~= player2_country then
-		player2["country"] = player2_country
-		print(player2_country)
-		send_json_to_browser("player2_country", string.format('{"name":"%s"}', player2_country))
-	end
-	local player2_score = obs.obs_data_get_int(settings, "player2_score")
-	if player2["score"] ~= player2_score then
-		player2["score"] = player2_score
-		send_json_to_browser("player2_score", string.format('{"score":%d}', player2_score))
-	end
-
-	local player2_name_plate = obs.obs_data_get_bool(settings, "player2_name_plate")
-	if player2["name_plate"] ~= player2_name_plate then
-		player2["name_plate"] = player2_name_plate
-		send_json_to_browser("player2_name_plate", string.format('{"value":%s}', player2_name_plate))
-	end
-	local player2_score_plate = obs.obs_data_get_bool(settings, "player2_score_plate")
-	if player2["score_plate"] ~= player2_score_plate then
-		player2["score_plate"] = player2_score_plate
-		send_json_to_browser("player2_score_plate", string.format('{"value":%s}', player2_score_plate))
-	end
-	local player2_country_plate = obs.obs_data_get_bool(settings, "player2_country_plate")
-	if player2["country_plate"] ~= player2_country_plate then
-		player2["country_plate"] = player2_country_plate
-		send_json_to_browser("player2_country_plate", string.format('{"value":%s}', player2_country_plate))
-	end
-
-	-- =============== STAGE ================
-	local group_stage = obs.obs_data_get_string(settings, "group_stage")
-	if stage ~= group_stage then
-		stage = group_stage
-		send_json_to_browser("group_stage", string.format('{"name":"%s"}', group_stage))
-	end
-
-	local group_stage_plate = obs.obs_data_get_bool(settings, "group_stage_plate")
-	if player2["group_stage_plate"] ~= group_stage_plate then
-		player2["group_stage_plate"] = group_stage_plate
-		send_json_to_browser("group_stage_plate", string.format('{"value":%s}', group_stage_plate))
-	end
-	local tournament_logo_plate = obs.obs_data_get_bool(settings, "tournament_logo_plate")
-	if player2["tournament_logo_plate"] ~= tournament_logo_plate then
-		player2["tournament_logo_plate"] = tournament_logo_plate
-		send_json_to_browser("tournament_logo_plate", string.format('{"value":%s}', tournament_logo_plate))
+		if value ~= player[key] then
+			player[key] = value
+			if isInt then
+				send_json_to_browser(key, encode_int_payload(value))
+			elseif isBool then
+				send_json_to_browser(key, encode_bool_payload(value))
+			else
+				send_json_to_browser(key, encode_string_payload(value))
+			end
+		end
 	end
 end
 

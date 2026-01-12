@@ -411,41 +411,41 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 	//})
 	window.addEventListener("player1_name", (payload: Event) => {
 		const d = payload as any as UpdateNameEvent;
-		dispatchPlayer1({ type: "name_value", value: d.detail.name });
+		dispatchPlayer1({ type: "name_value", value: d.detail.value });
 	})
 	window.addEventListener("player1_team", (payload: Event) => {
 		const d = payload as any as UpdateTeamEvent;
-		dispatchPlayer1({ type: "team_value", value: d.detail.name });
+		dispatchPlayer1({ type: "team_value", value: d.detail.value });
 	})
 	window.addEventListener("player1_country", (payload: Event) => {
 		const d = payload as any as UpdateCountryEvent;
-		dispatchPlayer1({ type: "country_value", value: d.detail.name });
+		dispatchPlayer1({ type: "country_value", value: d.detail.value });
 	})
 	window.addEventListener("player1_score", (payload: Event) => {
 		const d = payload as any as UpdateScoreEvent;
-		dispatchPlayer1({ type: "score_value", value: d.detail.score });
+		dispatchPlayer1({ type: "score_value", value: d.detail.value });
 	})
 
 	window.addEventListener("player2_name", (payload: Event) => {
 		const d = payload as any as UpdateNameEvent;
-		dispatchPlayer2({ type: "name_value", value: d.detail.name });
+		dispatchPlayer2({ type: "name_value", value: d.detail.value });
 	})
 	window.addEventListener("player2_team", (payload: Event) => {
 		const d = payload as any as UpdateTeamEvent;
-		dispatchPlayer2({ type: "team_value", value: d.detail.name });
+		dispatchPlayer2({ type: "team_value", value: d.detail.value });
 	})
 	window.addEventListener("player2_country", (payload: Event) => {
 		const d = payload as any as UpdateCountryEvent;
-		dispatchPlayer2({ type: "country_value", value: d.detail.name });
+		dispatchPlayer2({ type: "country_value", value: d.detail.value });
 	})
 	window.addEventListener("player2_score", (payload: Event) => {
 		const d = payload as any as UpdateScoreEvent;
-		dispatchPlayer2({ type: "score_value", value: d.detail.score });
+		dispatchPlayer2({ type: "score_value", value: d.detail.value });
 	})
 
 	window.addEventListener("group_stage", (payload: Event) => {
 		const d = payload as any as UpdateGroupStageEvent;
-		dispatchStage({ type: "value", value: d.detail.name });
+		dispatchStage({ type: "value", value: d.detail.value });
 	})
 
 	window.addEventListener("reset_position", () => {
@@ -492,8 +492,8 @@ export const SharingSystemProvider: FC<{ children: ReactNode }> = ({ children })
 		return {
 			type: key,
 			value: {
-				code: payload.detail.image == "DEFAULT" ? "DEFAULT" : "NEW",
-				image: payload.detail.image == "DEFAULT" ? defaultImage : payload.detail.image,
+				code: payload.detail.value == "DEFAULT" ? "DEFAULT" : "NEW",
+				image: payload.detail.value == "DEFAULT" ? defaultImage : payload.detail.value,
 			}
 		}
 	}
