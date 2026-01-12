@@ -6,27 +6,27 @@ import { country } from '../../constants/country';
 
 interface UpdateNameEvent {
 	detail: {
-		name: string
+		value: string
 	}
 }
 interface UpdateTeamEvent {
 	detail: {
-		name: string
+		value: string
 	}
 }
 interface UpdateScoreEvent {
 	detail: {
-		score: number
+		value: number
 	}
 }
 interface UpdateCountryEvent {
 	detail: {
-		name: string
+		value: string
 	}
 }
 interface UpdateGroupStageEvent {
 	detail: {
-		name: string
+		value: string
 	}
 }
 interface VisibilityToggleEvent {
@@ -36,7 +36,7 @@ interface VisibilityToggleEvent {
 }
 interface ArtworkUpdateEvent {
 	detail: {
-		image: string
+		value: string
 	}
 }
 

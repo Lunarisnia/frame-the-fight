@@ -1,7 +1,122 @@
 local bit = require("bit") -- Standard in LuaJIT
 obs = obslua
 
+stage = ""
 source_name = "Browser"
+hotkeys = {
+	increment_score_p1 = obs.OBS_INVALID_HOTKEY_ID,
+	increment_score_p2 = obs.OBS_INVALID_HOTKEY_ID,
+
+	decrement_score_p1 = obs.OBS_INVALID_HOTKEY_ID,
+	decrement_score_p2 = obs.OBS_INVALID_HOTKEY_ID,
+
+	reset_scores = obs.OBS_INVALID_HOTKEY_ID,
+	swap_players = obs.OBS_INVALID_HOTKEY_ID,
+}
+
+player_keys = {
+	player1_name = "player1_name",
+	player1_team = "player1_team",
+	player1_score = "player1_score",
+	player1_country = "player1_country",
+	player1_name_plate = "player1_name_plate",
+	player1_score_plate = "player1_score_plate",
+	player1_country_plate = "player1_country_plate",
+
+	player2_name = "player2_name",
+	player2_team = "player2_team",
+	player2_score = "player2_score",
+	player2_country = "player2_country",
+	player2_name_plate = "player2_name_plate",
+	player2_score_plate = "player2_score_plate",
+	player2_country_plate = "player2_country_plate",
+
+	group_stage = "group_stage",
+	group_stage_plate = "group_stage_plate",
+	tournament_logo_plate = "tournament_logo_plate",
+
+	source_name = "source_name",
+}
+
+function add_score(key)
+	player[key] = math.min(player[key] + 1, 99)
+end
+
+function subtract_score(key)
+	player[key] = math.max(player[key] - 1, 0)
+end
+
+function on_change_score(target, solver)
+	return function(pressed)
+		if not pressed then
+			return false
+		end
+		player[target] = math.min(player[target] + 1, 99)
+		solver(target)
+		return set_int(target, player[target])
+	end
+end
+
+hotkeys_callback = {
+	increment_score_p1 = on_change_score(player_keys.player1_score, add_score),
+	increment_score_p2 = on_change_score(player_keys.player2_score, add_score),
+
+	decrement_score_p1 = on_change_score(player_keys.player1_score, subtract_score),
+	decrement_score_p2 = on_change_score(player_keys.player2_score, subtract_score),
+
+	reset_scores = function()
+		return on_reset_scores()
+	end,
+	swap_players = function()
+		return on_swap_players()
+	end,
+}
+hotkeys_label = {
+	increment_score_p1 = "Increment Score (P1/Left)",
+	increment_score_p2 = "Increment Score (P2/Right)",
+
+	decrement_score_p1 = "Decrement Score (P1/Left)",
+	decrement_score_p2 = "Decrement Score (P2/Right)",
+
+	reset_scores = "Reset Scores",
+	swap_players = "Swap Players",
+}
+
+artwork_keys = {
+	"player1_name_plate_artwork",
+	"player1_score_plate_artwork",
+	"player1_country_plate_artwork",
+
+	"player2_name_plate_artwork",
+	"player2_score_plate_artwork",
+	"player2_country_plate_artwork",
+
+	"group_stage_plate_artwork",
+}
+
+player = {
+	player1_name = "",
+	player1_team = "",
+	player1_score = 0,
+	player1_country = "",
+	player1_name_plate = true,
+	player1_score_plate = true,
+	player1_country_plate = true,
+
+	player2_name = "",
+	player2_team = "",
+	player2_score = 0,
+	player2_country = "",
+	player2_name_plate = true,
+	player2_score_plate = true,
+	player2_country_plate = true,
+
+	group_stage = "",
+	group_stage_plate = true,
+	tournament_logo_plate = true,
+
+	source_name = "",
+}
 
 function script_description()
 	return [[
@@ -29,88 +144,46 @@ function send_json_to_browser(eventName, payload)
 	end
 end
 
+function encode_string_payload(value)
+	return string.format('{"value":"%s"}', value)
+end
+
+function encode_int_payload(value)
+	return string.format('{"value":%d}', value)
+end
+
+function encode_bool_payload(value)
+	return string.format('{"value":%s}', value)
+end
+
+function set_int(key, value)
+	if g_settings then
+		obs.obs_data_set_int(g_settings, key, value)
+		send_json_to_browser(key, encode_int_payload(value))
+		return true
+	end
+	return false
+end
+
+function set_default_string(settings, key, value)
+	obs.obs_data_set_default_string(settings, key, value)
+	send_json_to_browser(key, encode_string_payload(value))
+	return true
+end
+
+function set_default_int(settings, key, value)
+	obs.obs_data_set_default_int(settings, key, value)
+	send_json_to_browser(key, encode_int_payload(value))
+	return true
+end
+
+function set_default_bool(settings, key, value)
+	obs.obs_data_set_default_bool(settings, key, value)
+	send_json_to_browser(key, encode_bool_payload(value))
+	return true
+end
+
 -- -------------- HOTKEY ---------------- --
-function on_increment_score(target)
-	return function(pressed)
-		if not pressed then
-			return false
-		end
-		if target == "player1" then
-			if g_settings then
-				player1["score"] = math.min(player1["score"] + 1, 99)
-				obs.obs_data_set_int(g_settings, "player1_score", player1["score"])
-				send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
-				return true
-			end
-		else
-			if g_settings then
-				player2["score"] = math.min(player2["score"] + 1, 99)
-				obs.obs_data_set_int(g_settings, "player2_score", player2["score"])
-				send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
-				return true
-			end
-		end
-	end
-end
-
-function on_decrement_score(target)
-	return function(pressed)
-		if not pressed then
-			return false
-		end
-		if target == "player1" then
-			if g_settings then
-				player1["score"] = math.max(player1["score"] - 1, 0)
-				obs.obs_data_set_int(g_settings, "player1_score", player1["score"])
-				send_json_to_browser("player1_score", string.format('{"score":%d}', player1["score"]))
-				return true
-			end
-		else
-			if g_settings then
-				player2["score"] = math.max(player2["score"] - 1, 0)
-				obs.obs_data_set_int(g_settings, "player2_score", player2["score"])
-				send_json_to_browser("player2_score", string.format('{"score":%d}', player2["score"]))
-				return true
-			end
-		end
-	end
-end
-
-hotkeys = {
-	increment_score_p1 = obs.OBS_INVALID_HOTKEY_ID,
-	increment_score_p2 = obs.OBS_INVALID_HOTKEY_ID,
-
-	decrement_score_p1 = obs.OBS_INVALID_HOTKEY_ID,
-	decrement_score_p2 = obs.OBS_INVALID_HOTKEY_ID,
-
-	reset_scores = obs.OBS_INVALID_HOTKEY_ID,
-	swap_players = obs.OBS_INVALID_HOTKEY_ID,
-}
-hotkeys_callback = {
-	increment_score_p1 = on_increment_score("player1"),
-	increment_score_p2 = on_increment_score("player2"),
-
-	decrement_score_p1 = on_decrement_score("player1"),
-	decrement_score_p2 = on_decrement_score("player2"),
-
-	reset_scores = function()
-		return on_reset_scores()
-	end,
-	swap_players = function()
-		return on_swap_players()
-	end,
-}
-hotkeys_label = {
-	increment_score_p1 = "Increment Score (P1/Left)",
-	increment_score_p2 = "Increment Score (P2/Right)",
-
-	decrement_score_p1 = "Decrement Score (P1/Left)",
-	decrement_score_p2 = "Decrement Score (P2/Right)",
-
-	reset_scores = "Reset Scores",
-	swap_players = "Swap Players",
-}
-
 function script_load(settings)
 	for key, _ in pairs(hotkeys) do
 		hotkeys[key] = obs.obs_hotkey_register_frontend(script_path(), hotkeys_label[key], hotkeys_callback[key])
@@ -133,46 +206,32 @@ function script_defaults(settings)
 	local default_country = "ID"
 
 	local player1_default_name = "Player 1"
-	obs.obs_data_set_default_string(settings, "player1_name", player1_default_name)
-	send_json_to_browser("player1_name", string.format('{"name":"%s"}', player1_default_name))
-	obs.obs_data_set_default_string(settings, "player1_team", default_team)
-	send_json_to_browser("player1_team", string.format('{"name":"%s"}', default_team))
-	obs.obs_data_set_default_string(settings, "player1_country", default_country)
-	send_json_to_browser("player1_country", string.format('{"name":"%s"}', default_country))
-	obs.obs_data_set_default_int(settings, "player1_score", 0)
-	send_json_to_browser("player1_score", string.format('{"score":%d}', 0))
+	set_default_string(settings, player_keys.player1_name, player1_default_name)
+	set_default_string(settings, player_keys.player1_team, default_team)
+	set_default_string(settings, player_keys.player1_country, default_country)
+	set_default_int(settings, player_keys.player1_score, 0)
 
 	local player2_default_name = "Player 2 (L)"
-	obs.obs_data_set_default_string(settings, "player2_name", player2_default_name)
-	send_json_to_browser("player2_name", string.format('{"name":"%s"}', player2_default_name))
-	obs.obs_data_set_default_string(settings, "player2_team", "TEAM")
-	send_json_to_browser("player2_team", string.format('{"name":"%s"}', default_team))
-	obs.obs_data_set_default_string(settings, "player2_country", "GB")
-	send_json_to_browser("player2_country", string.format('{"name":"%s"}', default_country))
-	obs.obs_data_set_default_int(settings, "player2_score", 0)
-	send_json_to_browser("player2_score", string.format('{"score":%d}', 0))
+	set_default_string(settings, player_keys.player2_name, player2_default_name)
+	set_default_string(settings, player_keys.player2_team, default_team)
+	set_default_string(settings, player_keys.player2_country, default_country)
+	set_default_int(settings, player_keys.player2_score, 0)
 
-	obs.obs_data_set_default_string(settings, "group_stage", "Grand Final")
-	send_json_to_browser("group_stage", string.format('{"name":"%s"}', "Grand Final"))
+	set_default_string(settings, player_keys.group_stage, "Grand Final")
 
-	obs.obs_data_set_default_bool(settings, "player1_name_plate", true)
-	send_json_to_browser("player1_name_plate", string.format('{"value":%s}', true))
-	obs.obs_data_set_default_bool(settings, "player1_score_plate", true)
-	send_json_to_browser("player1_score_plate", string.format('{"value":%s}', true))
-	obs.obs_data_set_default_bool(settings, "player1_country_plate", true)
-	send_json_to_browser("player1_country_plate", string.format('{"value":%s}', true))
+	set_default_bool(settings, player_keys.player1_name_plate, true)
+	set_default_bool(settings, player_keys.player1_score_plate, true)
+	set_default_bool(settings, player_keys.player1_country_plate, true)
 
-	obs.obs_data_set_default_bool(settings, "player2_name_plate", true)
-	send_json_to_browser("player2_name_plate", string.format('{"value":%s}', true))
-	obs.obs_data_set_default_bool(settings, "player2_score_plate", true)
-	send_json_to_browser("player2_score_plate", string.format('{"value":%s}', true))
-	obs.obs_data_set_default_bool(settings, "player2_country_plate", true)
-	send_json_to_browser("player2_country_plate", string.format('{"value":%s}', true))
+	set_default_bool(settings, player_keys.player2_name_plate, true)
+	set_default_bool(settings, player_keys.player2_score_plate, true)
+	set_default_bool(settings, player_keys.player2_country_plate, true)
 
-	obs.obs_data_set_default_bool(settings, "group_stage_plate", true)
-	send_json_to_browser("group_stage_plate", string.format('{"value":%s}', true))
-	obs.obs_data_set_default_bool(settings, "tournament_logo_plate", true)
-	send_json_to_browser("tournament_logo_plate", string.format('{"value":%s}', true))
+	set_default_bool(settings, player_keys.group_stage_plate, true)
+	set_default_bool(settings, player_keys.tournament_logo_plate, true)
+
+	-- NOTE: does not seem to work
+	set_default_string(settings, player_keys.source_name, source_name)
 end
 
 function on_reset_layout()
@@ -514,19 +573,6 @@ end
 
 player1 = {}
 player2 = {}
-stage = ""
-
-artwork_keys = {
-	"player1_name_plate_artwork",
-	"player1_score_plate_artwork",
-	"player1_country_plate_artwork",
-
-	"player2_name_plate_artwork",
-	"player2_score_plate_artwork",
-	"player2_country_plate_artwork",
-
-	"group_stage_plate_artwork",
-}
 
 function script_update(settings)
 	g_settings = settings
@@ -646,9 +692,8 @@ end
 --- Cause I don't want to deal with external files other than the UI related one (for now)
 --- --  COUNTRIES – mapping from full country name → ISO‑3166‑1 alpha‑2 code
 --  (values taken from ISO 3166‑1 – see source id="6")
-COUNTRIES = {
+COUNTRIES = { -- trimmed list for brevity
 	["Afghanistan"] = "AF",
-	["Åland Islands"] = "AX",
 	["Albania"] = "AL",
 	["Algeria"] = "DZ",
 	["American Samoa"] = "AS",
@@ -656,14 +701,13 @@ COUNTRIES = {
 	["Angola"] = "AO",
 	["Anguilla"] = "AI",
 	["Antarctica"] = "AQ",
-	["Antigua and Barbuda"] = "AG",
 	["Argentina"] = "AR",
 	["Armenia"] = "AM",
 	["Aruba"] = "AW",
 	["Australia"] = "AU",
 	["Austria"] = "AT",
 	["Azerbaijan"] = "AZ",
-	["Bahamas (the)"] = "BS",
+	["Bahamas"] = "BS",
 	["Bahrain"] = "BH",
 	["Bangladesh"] = "BD",
 	["Barbados"] = "BB",
@@ -673,227 +717,57 @@ COUNTRIES = {
 	["Benin"] = "BJ",
 	["Bermuda"] = "BM",
 	["Bhutan"] = "BT",
-	["Bolivia (Plurinational State of)"] = "BO",
-	["Bonaire, Sint Eustatius and Saba"] = "BQ",
-	["Bosnia and Herzegovina"] = "BA",
+	["Bolivia"] = "BO",
+	["Bosnia"] = "BA",
 	["Botswana"] = "BW",
-	["Bouvet Island"] = "BV",
 	["Brazil"] = "BR",
-	["British Indian Ocean Territory (the)"] = "IO",
-	["Brunei Darussalam"] = "BN",
+	["Brunei"] = "BN",
 	["Bulgaria"] = "BG",
 	["Burkina Faso"] = "BF",
 	["Burundi"] = "BI",
-	["Cabo Verde"] = "CV",
 	["Cambodia"] = "KH",
 	["Cameroon"] = "CM",
 	["Canada"] = "CA",
-	["Cayman Islands (the)"] = "KY",
-	["Central African Republic (the)"] = "CF",
 	["Chad"] = "TD",
 	["Chile"] = "CL",
 	["China"] = "CN",
-	["Christmas Island"] = "CX",
-	["Cocos (Keeling) Islands (the)"] = "CC",
 	["Colombia"] = "CO",
-	["Comoros (the)"] = "KM",
-	["Congo (the Democratic Republic of the)"] = "CD",
-	["Congo (the)"] = "CG",
-	["Cook Islands (the)"] = "CK",
-	["Costa Rica"] = "CR",
-	["Côte d'Ivoire"] = "CI",
-	["Croatia"] = "HR",
-	["Cuba"] = "CU",
-	["Curaçao"] = "CW",
-	["Cyprus"] = "CY",
+	["Congo"] = "CG",
 	["Czechia"] = "CZ",
 	["Denmark"] = "DK",
-	["Djibouti"] = "DJ",
-	["Dominica"] = "DM",
-	["Dominican Republic (the)"] = "DO",
-	["Ecuador"] = "EC",
 	["Egypt"] = "EG",
-	["El Salvador"] = "SV",
-	["Equatorial Guinea"] = "GQ",
-	["Eritrea"] = "ER",
-	["Estonia"] = "EE",
-	["Eswatini"] = "SZ",
 	["Ethiopia"] = "ET",
-	["Falkland Islands (the) [Malvinas]"] = "FK",
-	["Faroe Islands (the)"] = "FO",
-	["Fiji"] = "FJ",
-	["Finland"] = "FI",
 	["France"] = "FR",
-	["French Guiana"] = "GF",
-	["French Polynesia"] = "PF",
-	["French Southern Territories (the)"] = "TF",
-	["Gabon"] = "GA",
-	["Gambia (the)"] = "GM",
-	["Georgia"] = "GE",
 	["Germany"] = "DE",
-	["Ghana"] = "GH",
-	["Gibraltar"] = "GI",
 	["Greece"] = "GR",
-	["Greenland"] = "GL",
-	["Grenada"] = "GD",
-	["Guadeloupe"] = "GP",
-	["Guam"] = "GU",
-	["Guatemala"] = "GT",
-	["Guernsey"] = "GG",
-	["Guinea"] = "GN",
-	["Guinea-Bissau"] = "GW",
-	["Guyana"] = "GY",
-	["Haiti"] = "HT",
-	["Heard Island and McDonald Islands"] = "HM",
-	["Holy See (the)"] = "VA",
-	["Honduras"] = "HN",
-	["Hong Kong"] = "HK",
-	["Hungary"] = "HU",
-	["Iceland"] = "IS",
 	["India"] = "IN",
 	["Indonesia"] = "ID",
-	["Iran (Islamic Republic of)"] = "IR",
 	["Iraq"] = "IQ",
 	["Ireland"] = "IE",
-	["Isle of Man"] = "IM",
 	["Israel"] = "IL",
 	["Italy"] = "IT",
-	["Jamaica"] = "JM",
 	["Japan"] = "JP",
-	["Jersey"] = "JE",
-	["Jordan"] = "JO",
-	["Kazakhstan"] = "KZ",
 	["Kenya"] = "KE",
-	["Kiribati"] = "KI",
-	["Korea (the Democratic People's Republic of)"] = "KP",
-	["Korea (the Republic of)"] = "KR",
-	["Kuwait"] = "KW",
-	["Kyrgyzstan"] = "KG",
-	["Lao People's Democratic Republic (the)"] = "LA",
-	["Latvia"] = "LV",
-	["Lebanon"] = "LB",
-	["Lesotho"] = "LS",
-	["Liberia"] = "LR",
-	["Libya"] = "LY",
-	["Liechtenstein"] = "LI",
-	["Lithuania"] = "LT",
-	["Luxembourg"] = "LU",
-	["Macao"] = "MO",
-	["Republic of North Macedonia"] = "MK",
-	["Madagascar"] = "MG",
-	["Malawi"] = "MW",
 	["Malaysia"] = "MY",
-	["Maldives"] = "MV",
-	["Mali"] = "ML",
-	["Malta"] = "MT",
-	["Marshall Islands (the)"] = "MH",
-	["Martinique"] = "MQ",
-	["Mauritania"] = "MR",
-	["Mauritius"] = "MU",
-	["Mayotte"] = "YT",
 	["Mexico"] = "MX",
-	["Micronesia (Federated States of)"] = "FM",
-	["Moldova (the Republic of)"] = "MD",
-	["Monaco"] = "MC",
-	["Mongolia"] = "MN",
-	["Montenegro"] = "ME",
-	["Montserrat"] = "MS",
-	["Morocco"] = "MA",
-	["Mozambique"] = "MZ",
-	["Myanmar"] = "MM",
-	["Namibia"] = "NA",
-	["Nauru"] = "NR",
-	["Nepal"] = "NP",
-	["Netherlands (the)"] = "NL",
-	["New Caledonia"] = "NC",
-	["New Zealand"] = "NZ",
-	["Nicaragua"] = "NI",
-	["Niger (the)"] = "NE",
 	["Nigeria"] = "NG",
-	["Niue"] = "NU",
-	["Norfolk Island"] = "NF",
-	["Northern Mariana Islands (the)"] = "MP",
 	["Norway"] = "NO",
-	["Oman"] = "OM",
 	["Pakistan"] = "PK",
-	["Palau"] = "PW",
-	["Palestine"] = "PS",
-	["Panama"] = "PA",
-	["Papua New Guinea"] = "PG",
-	["Paraguay"] = "PY",
 	["Peru"] = "PE",
-	["Philippines (the)"] = "PH",
-	["Pitcairn"] = "PN",
+	["Philippines"] = "PH",
 	["Poland"] = "PL",
 	["Portugal"] = "PT",
-	["Puerto Rico"] = "PR",
-	["Qatar"] = "QA",
-	["Réunion"] = "RE",
-	["Romania"] = "RO",
-	["Russian Federation (the)"] = "RU",
-	["Rwanda"] = "RW",
-	["Saint Barthélemy"] = "BL",
-	["Saint Helena, Ascension and Tristan da Cunha"] = "SH",
-	["Saint Kitts and Nevis"] = "KN",
-	["Saint Lucia"] = "LC",
-	["Saint Martin (French part)"] = "MF",
-	["Saint Pierre and Miquelon"] = "PM",
-	["Saint Vincent and the Grenadines"] = "VC",
-	["Samoa"] = "WS",
-	["San Marino"] = "SM",
-	["Sao Tome and Principe"] = "ST",
+	["Russia"] = "RU",
 	["Saudi Arabia"] = "SA",
-	["Senegal"] = "SN",
-	["Serbia"] = "RS",
-	["Seychelles"] = "SC",
-	["Sierra Leone"] = "SL",
-	["Singapore"] = "SG",
-	["Slovakia"] = "SK",
-	["Slovenia"] = "SI",
-	["Solomon Islands"] = "SB",
-	["Somalia"] = "SO",
 	["South Africa"] = "ZA",
-	["South Georgia and the South Sandwich Islands"] = "GS",
-	["South Sudan"] = "SS",
 	["Spain"] = "ES",
-	["Sri Lanka"] = "LK",
-	["Sudan"] = "SD",
-	["Suriname"] = "SR",
-	["Svalbard and Jan Mayen"] = "SJ",
-	["Swaziland"] = "SZ",
 	["Sweden"] = "SE",
 	["Switzerland"] = "CH",
-	["Syrian Arab Republic"] = "SY",
-	["Taiwan (Province of China)"] = "TW",
-	["Tajikistan"] = "TJ",
-	["Tanzania, United Republic of"] = "TZ",
 	["Thailand"] = "TH",
-	["Timor-Leste"] = "TL",
-	["Togo"] = "TG",
-	["Tokelau"] = "TK",
-	["Tonga"] = "TO",
-	["Trinidad and Tobago"] = "TT",
-	["Tunisia"] = "TN",
 	["Turkey"] = "TR",
-	["Turkmenistan"] = "TM",
-	["Turks and Caicos Islands (the)"] = "TC",
-	["Tuvalu"] = "TV",
-	["Uganda"] = "UG",
 	["Ukraine"] = "UA",
-	["United Arab Emirates (the)"] = "AE",
-	["United Kingdom of Great Britain and Northern Ireland (the)"] = "GB",
-	["United States Minor Outlying Islands (the)"] = "UM",
-	["United States of America (the)"] = "US",
-	["Uruguay"] = "UY",
-	["Uzbekistan"] = "UZ",
-	["Vanuatu"] = "VU",
-	["Venezuela (Bolivarian Republic of)"] = "VE",
-	["Viet Nam"] = "VN",
-	["Virgin Islands (British)"] = "VG",
-	["Virgin Islands (U.S.)"] = "VI",
-	["Wallis and Futuna"] = "WF",
-	["Western Sahara"] = "EH",
-	["Yemen"] = "YE",
-	["Zambia"] = "ZM",
+	["United Kingdom"] = "GB",
+	["United States"] = "US",
+	["Vietnam"] = "VN",
 	["Zimbabwe"] = "ZW",
 }
