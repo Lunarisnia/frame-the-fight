@@ -579,9 +579,6 @@ function script_properties()
 	return props
 end
 
-player1 = {}
-player2 = {}
-
 function script_update(settings)
 	g_settings = settings
 	local s_name = obs.obs_data_get_string(settings, player_keys.source_name)

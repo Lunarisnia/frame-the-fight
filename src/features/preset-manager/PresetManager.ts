@@ -3,10 +3,9 @@ import type { SharingSystemContextType } from "../sharing-system/SharingSystemCo
 
 interface Preset {
 	tekken8: SharingSystemContextType
-	streetFighter6: SharingSystemContextType
 }
 
-export type Game = "tekken8" | "streetFighter6";
+export type Game = "tekken8";
 
 const preset: Preset = {
 	tekken8: {
@@ -188,155 +187,6 @@ const preset: Preset = {
 
 		},
 	},
-	streetFighter6: {
-		player1: {
-			nameplate: {
-				position: {
-					x: 200,
-					y: 10,
-				},
-				textPosition: { x: 0, y: 0 },
-				teamTextPosition: { x: 0, y: 0 },
-				name: "",
-				team: "",
-				nameFontSize: 14,
-				teamFontSize: 14,
-				artwork: "nameplate.png",
-				visible: true,
-			},
-			country: {
-				position: {
-					x: 170,
-					y: 10,
-				},
-				textPosition: { x: 0, y: 0 },
-				name: "",
-				fontSize: 14,
-				visible: true,
-				artwork: "country.png"
-			},
-			score: {
-				position: {
-					x: 590,
-					y: 10,
-				},
-				textPosition: { x: 0, y: 0 },
-				value: 0,
-				fontSize: 14,
-				visible: true,
-				artwork: "score.png"
-			},
-		},
-		player2: {
-			nameplate: {
-				position: {
-					x: 200,
-					y: 10,
-				},
-				textPosition: { x: 0, y: 0 },
-				teamTextPosition: { x: 0, y: 0 },
-				name: "",
-				team: "",
-				nameFontSize: 14,
-				teamFontSize: 14,
-				visible: true,
-				artwork: "nameplate.png"
-			},
-			country: {
-				position: {
-					x: 170,
-					y: 10,
-				},
-				textPosition: { x: 0, y: 0 },
-				name: "",
-				fontSize: 14,
-				visible: true,
-				artwork: "country.png"
-			},
-			score: {
-				position: {
-					x: 590,
-					y: 10,
-				},
-				textPosition: { x: 0, y: 0 },
-				value: 0,
-				fontSize: 14,
-				visible: true,
-				artwork: "score.png"
-			},
-		},
-		stage: {
-			position: { x: 0, y: 0 },
-			textPosition: { x: 0, y: 0 },
-			value: "",
-			fontSize: 14,
-			visible: true,
-			artwork: "group.png"
-		},
-		font: "Roboto",
-		logo: {
-			position: {
-				x: 862,
-				y: 900,
-			},
-			size: {
-				w: 180,
-				h: 180,
-			},
-			visible: true,
-		},
-		setPlayer2TeamPosition() {
-
-		},
-		setPlayer2ScorePosition() {
-
-		},
-		setPlayer2HealthPosition() {
-
-		},
-		setPlayer2CountryPosition() {
-
-		},
-		setPlayer1CountryIconPosition() {
-
-		},
-		setPlayer1ScoreTextPosition() {
-
-		},
-		setPlayer2NamePosition() {
-
-		},
-		setPlayer2CountryIconPosition() {
-
-		},
-		setPlayer2ScoreTextPosition() {
-
-		},
-		setStagePosition() {
-
-		},
-		setStageNamePosition() {
-
-		},
-		setLogoPosition() {
-
-		},
-		setPlayer1TeamPosition() {
-
-		},
-		setPlayer1CountryPosition() {
-
-		},
-		setPlayer1ScorePosition() {
-
-		},
-		setPlayer1HealthPosition() {
-
-		},
-		setPlayer1NamePosition() {
-
-		},
-	}
 }
 
 export const getPreset = (game: Game) => {
