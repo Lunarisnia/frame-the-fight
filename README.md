@@ -41,3 +41,20 @@ This only hides the UI component but not the Text, if you want to do so then jus
 You can also use your own custom design of the UI, if you need any template [Here](https://github.com/Lunarisnia/frame-the-fight/tree/main/public), PNG format are highly reccomended for the image
 <img width="671" height="743" alt="image" src="https://github.com/user-attachments/assets/6120728d-a50f-4fa4-a7e5-a6ecd3cf2001" />
 
+## Moving the components
+You can use the interact feature on OBS to move the component by drag & dropping them. if you want to reset the position there is a "Reset Layout" button under the Group Stage customization on the control script.
+
+
+https://github.com/user-attachments/assets/47b3cb16-449b-4ed4-b444-8a86f407503e
+
+
+
+# Building the program
+Clone the repo, navigate into it then run these commands.
+```
+1. npm install
+2. npm run dev
+```
+
+# Contributing
+You can contribute by reporting bugs in the issues pages, or even helping to maintain the project directly!. You can also contribute by simply starring this project, sharing it or [donate money to me](https://linktr.ee/lounarisnia).
