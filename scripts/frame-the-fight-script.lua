@@ -1,4 +1,4 @@
-local bit = require("bit") -- Standard in LuaJIT
+local bit = require("bit")
 obs = obslua
 
 g_settings = nil
@@ -129,10 +129,10 @@ function script_description()
 	   <center><h2>Frame The Fight</h2></center>
            <p>
 	   This controls the overlay from the browser source. Go to <em>Settings
-           </em> then <em>Hotkeys</em> to select the key combination.
+           </em> then <em>Hotkeys</em> to select the key combination for incrementing/decrementing score, reset scores and more.:
 	   </p>
 	   <p>
-		Buy me coffee <a href="https://google.com">here</a>
+		Buy me coffee (Donate) <a href="https://linktr.ee/Lounarisnia">here</a>
            </p>
 	   ]]
 end
